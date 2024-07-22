@@ -1,0 +1,19 @@
+#============================================================================
+# DATABASE
+#============================================================================
+db:
+  name: dashboard
+  host: localhost
+  port: 5432
+  username: postgres
+  password: admin
+  auto-reconnect: true
+  ssl: false
+
+#============================================================================
+# FLYWAY
+#============================================================================
+flyway:
+  url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
+  user: postgres
+  password: admin
