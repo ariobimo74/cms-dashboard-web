@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum EMemberLevel {
 
-    REGULAR, PLATINUM
+    REGULAR, PREMIUM
 
 }
