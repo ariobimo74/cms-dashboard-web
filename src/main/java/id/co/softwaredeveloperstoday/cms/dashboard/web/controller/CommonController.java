@@ -16,10 +16,18 @@ public class CommonController {
         return "login/login";
     }
 
+    @GetMapping("/register")
+    public String registerPage() {
+        return "login/register";
+    }
+
     @GetMapping("/dashboard")
     public String dashboard() {
         return "dashboard";
     }
+
+    @GetMapping("/change_password")
+    public String forgotPasswordPage() {return "login/change_password";}
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {

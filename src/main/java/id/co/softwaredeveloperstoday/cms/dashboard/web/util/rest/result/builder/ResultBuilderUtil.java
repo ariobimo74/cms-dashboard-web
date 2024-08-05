@@ -49,8 +49,24 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
         return new ResponseEntity<>(resultDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public static <T> ResponseEntity<ResultDto<T>> badRequest(T data, String errorMessage) {
+        ResultDtoImpl<T> resultDto = new ResultDtoImpl<>();
+        resultDto.setData(data);
+        resultDto.setResponseData(responseDataBadRequest(errorMessage));
+
+        return new ResponseEntity<>(resultDto, HttpStatus.BAD_REQUEST);
+    }
+
     public static <T> ResponseEntity<ResultDto<T>> internalServerError(String errorMessage) {
         return internalServerError(null, errorMessage);
+    }
+
+    public static <T> ResponseEntity<ResultDto<T>> badRequest(String errorMessage) {
+        ResultDtoImpl<String> resultDto = new ResultDtoImpl<>();
+        resultDto.setData(errorMessage);
+        resultDto.setResponseData(responseDataBadRequest(errorMessage));
+
+        return badRequest(null, errorMessage);
     }
 
 }

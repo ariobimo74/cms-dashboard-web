@@ -24,4 +24,10 @@ public class BaseResponseDataBuilder {
         );
     }
 
+    static ResponseDataDto responseDataBadRequest(String message) {
+        return new ResponseDataDto(
+                IApplicationConstant.CommonValue.RestResponseValue.FAILED, HttpStatus.BAD_REQUEST.value(), message
+        );
+    }
+
 }
