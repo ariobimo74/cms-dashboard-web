@@ -15,9 +15,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class RequestChangePasswordDto {
 
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private String username;
     @NotNull
     @NotBlank
@@ -27,5 +24,9 @@ public class RequestChangePasswordDto {
     @NotBlank
     @NotEmpty
     private String newPassword;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String confirmNewPassword;
 
 }

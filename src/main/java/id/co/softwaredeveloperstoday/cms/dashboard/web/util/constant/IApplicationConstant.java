@@ -28,6 +28,8 @@ public interface IApplicationConstant {
         interface User {
             String USER_V1 = "/v1/user";
             String CHANGE_PASSWORD = "/change-password";
+            String CURRENT_ROLE = "/current-role";
+            String CHANGE_PASSWORD_ALLOWED_USER = "/allowed-user-to-change-password";
         }
     }
 
@@ -40,7 +42,9 @@ public interface IApplicationConstant {
         interface ErrorMessage {
             String ERROR_MESSAGE_USER = "Invalid Username and Password";
             String ERROR_MESSAGE_USER_NOT_ALLOWED = "User is not allowed to change other users' password";
-            String ERROR_OLD_PASSWORD_NOT_MATCH = "Old password not match";
+            String ERROR_OLD_PASSWORD_NOT_MATCH = "Old password is invalid";
+            String ERROR_NEW_PASSWORD_NOT_MATCH = "New password is not match";
+            String ERROR_MESSAGE_USER_FOUND = "User not found according to username";
         }
     }
 

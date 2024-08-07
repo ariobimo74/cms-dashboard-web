@@ -9,14 +9,18 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleNam
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.UserNotAllowedException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -36,18 +40,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changePassword(Authentication authentication, RequestChangePasswordDto changePasswordDto) {
-        if (authentication.getAuthorities().stream().anyMatch(a -> a.toString().equals(ERoleName.SUPER_ADMIN.toString()))
-                && !changePasswordDto.getUsername().equals(authentication.getName()))
+        if (StringUtils.isNotBlank(changePasswordDto.getUsername())
+                && authentication.getAuthorities().stream().noneMatch(a -> a.toString().equals(ERoleName.SUPER_ADMIN.toString())))
             throw new UserNotAllowedException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_NOT_ALLOWED);
 
+        if (StringUtils.isBlank(changePasswordDto.getUsername()))
+            changePasswordDto.setUsername(authentication.getName());
+
         User user = userDao.findByUsername(changePasswordDto.getUsername());
+
+        if (Objects.isNull(user))
+            throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_FOUND);
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode(changePasswordDto.getNewPassword());
 
-        if (encoder.matches(encodedPassword, user.getPassword()))
+        if (!encoder.matches(changePasswordDto.getOldPassword(), user.getPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_OLD_PASSWORD_NOT_MATCH);
+        else if (encoder.matches(changePasswordDto.getOldPassword(), user.getPassword())
+                && !Objects.equals(changePasswordDto.getNewPassword(), changePasswordDto.getConfirmNewPassword()))
+            throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_NEW_PASSWORD_NOT_MATCH);
 
-        user.setPassword(encodedPassword);
+        String encodedOldPassword = encoder.encode(changePasswordDto.getNewPassword());
+        user.setPassword(encodedOldPassword);
         user.setModifiedDate(new Date());
         user.setModifiedBy(authentication.getName());
         user.setPasswordmodifiedDate(new Date());
