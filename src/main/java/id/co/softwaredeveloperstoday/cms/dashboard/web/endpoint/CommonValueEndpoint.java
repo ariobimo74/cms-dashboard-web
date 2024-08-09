@@ -10,6 +10,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultLi
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.builder.ResultBuilderUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,9 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(
-        value = IApplicationConstant.RestVersion.CommonValue.COMMON_VALUE
+        value = IApplicationConstant.RestVersion.CommonValue.COMMON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
 )
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonValueEndpoint {
@@ -29,11 +32,16 @@ public class CommonValueEndpoint {
         return ResultBuilderUtil.ok(commonValueService.getGenders());
     }
 
-    @GetMapping(IApplicationConstant.RestVersion.CommonValue.MEMBER)
+    @GetMapping(IApplicationConstant.RestVersion.CommonValue.MEMBER_DEFAULT)
     public ResponseEntity<ResultDto<ResponseCommonEnumDto>> getDefaultMember(
             @RequestParam(value = "name", required = false, defaultValue = "REGULAR") EMemberLevel memberLevel
     ) {
         return ResultBuilderUtil.ok(commonValueService.getDefaultMember(memberLevel));
+    }
+
+    @GetMapping(IApplicationConstant.RestVersion.CommonValue.MEMBER)
+    public ResponseEntity<ResultListDto<ResponseCommonEnumDto>> getMembers() {
+        return ResultBuilderUtil.ok(commonValueService.getMembers());
     }
 
     @PatchMapping(IApplicationConstant.RestVersion.CommonValue.RECOMMENDED_USERNAME)

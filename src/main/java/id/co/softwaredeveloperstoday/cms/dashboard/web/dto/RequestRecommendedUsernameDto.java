@@ -22,8 +22,6 @@ public class RequestRecommendedUsernameDto {
     @NotBlank
     private String name;
     @NotNull
-    @NotEmpty
-    @NotBlank
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date birthDate;
 

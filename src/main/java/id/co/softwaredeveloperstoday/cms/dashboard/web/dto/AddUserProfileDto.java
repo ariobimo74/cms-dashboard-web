@@ -3,6 +3,7 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EGenderType;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EMemberLevel;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,6 @@ public class AddUserProfileDto {
     @NotEmpty
     private String idCardNumber;
     @NotNull
-    @NotBlank
-    @NotEmpty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     @NotNull
@@ -37,8 +36,6 @@ public class AddUserProfileDto {
     @NotEmpty
     private String placeOfBirth;
     @NotNull
-    @NotBlank
-    @NotEmpty
     private EGenderType gender;
     @NotNull
     @NotBlank
@@ -51,7 +48,12 @@ public class AddUserProfileDto {
     @NotNull
     @NotBlank
     @NotEmpty
-    private RoleDto roleDto;
+    private String confirmPassword;
+
+    @NotNull
+    private RoleDto roleDto = new RoleDto(
+            Long.parseLong(String.valueOf(ERoleName.USER.ordinal())), ERoleName.USER
+    );
 
     private String mobilePhoneNumber;
     private String email;

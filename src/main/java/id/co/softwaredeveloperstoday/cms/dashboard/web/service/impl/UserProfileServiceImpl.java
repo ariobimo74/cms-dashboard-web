@@ -9,6 +9,8 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -29,6 +32,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public AddUserProfileDto addUserProfile(AddUserProfileDto userProfileDto) {
+        if (!Objects.equals(userProfileDto.getPassword(), userProfileDto.getConfirmPassword()))
+            throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_NEW_PASSWORD_NOT_MATCH);
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         Role role = roleMapper.convertRoleDto(userProfileDto.getRoleDto());
