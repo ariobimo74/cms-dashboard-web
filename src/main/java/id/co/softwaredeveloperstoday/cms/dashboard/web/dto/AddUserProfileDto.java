@@ -28,8 +28,6 @@ public class AddUserProfileDto {
     @NotEmpty
     private String idCardNumber;
     @NotNull
-    @NotBlank
-    @NotEmpty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     @NotNull
@@ -48,6 +46,10 @@ public class AddUserProfileDto {
     @NotBlank
     @NotEmpty
     private String password;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String confirmPassword;
     @NotNull
     @NotBlank
     @NotEmpty

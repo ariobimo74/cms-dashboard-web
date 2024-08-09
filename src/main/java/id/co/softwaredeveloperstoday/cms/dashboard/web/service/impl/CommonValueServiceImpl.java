@@ -38,15 +38,23 @@ public class CommonValueServiceImpl implements CommonValueService {
     }
 
     @Override
+    public List<ResponseCommonEnumDto> getMembers() {
+        return Arrays.stream(EMemberLevel.values()).map(
+                e -> new ResponseCommonEnumDto(e.name(), e.name())).collect(Collectors.toList());
+    }
+
+    @Override
     public List<String> getRecommendedUsername(RequestRecommendedUsernameDto recommendedUsernameDto) {
         List<String> recommendedUsernameList = new ArrayList<>(List.of(
                 recommendedUsernameDto.getEmail(),
                 recommendedUsernameDto.getIdCardNumber(),
                 recommendedUsernameDto.getMobilePhoneNumber()
-        )).stream().filter(Strings::isNotBlank).collect(Collectors.toList());
+        )).stream().filter(Objects::nonNull).filter(Strings::isNotBlank).collect(Collectors.toList());
         recommendedUsernameList.addAll(convertNameToRecommended(recommendedUsernameDto.getName(), recommendedUsernameDto.getBirthDate()));
         List<User> users = userService.getUserByUsernameIn(recommendedUsernameList);
-        if (CollectionUtils.isEmpty(users)) return recommendedUsernameList.stream().distinct().collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(users))
+            return recommendedUsernameList.stream().distinct().collect(Collectors.toList());
         else return recommendedUsernameList.stream().filter(
                 r -> users.stream().noneMatch(u -> Objects.equals(r, u.getUsername()))
         ).distinct().collect(Collectors.toList());

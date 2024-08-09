@@ -7,7 +7,7 @@ $(document).ready(function(){
     async function roleToChangePassword() {
         console.log("determine roles")
         await $.ajax({
-            url: '/v1/user/current-role',
+            url: '/api/v1/user/current-role',
                 type: 'get',
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
@@ -17,7 +17,7 @@ $(document).ready(function(){
         })
     
         await $.ajax({
-            url: '/v1/user/allowed-user-to-change-password',
+            url: '/api/v1/user/allowed-user-to-change-password',
                 type: 'get',
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
@@ -65,7 +65,7 @@ $(document).ready(function(){
         }
 
         $.ajax({
-            url: '/v1/user/change-password',
+            url: '/api/v1/user/change-password',
             data: JSON.stringify(requestBodyChangePassword),
             type: 'post',
             contentType: 'application/json; charset=utf-8',
@@ -105,9 +105,4 @@ $(document).ready(function(){
             }
         })
     }
-
-    $('#cancelBtn').click(function() {
-        if (window.history.length > 1) window.history.back()
-        else window.location.href = "/dashboard"
-    })
 })

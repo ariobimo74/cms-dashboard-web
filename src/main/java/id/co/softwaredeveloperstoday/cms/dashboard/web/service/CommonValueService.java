@@ -12,6 +12,8 @@ public interface CommonValueService {
 
     ResponseCommonEnumDto getDefaultMember(EMemberLevel memberLevel);
 
+    List<ResponseCommonEnumDto> getMembers();
+
     List<String> getRecommendedUsername(RequestRecommendedUsernameDto recommendedUsernameDto);
 
 }

@@ -22,11 +22,12 @@ public interface IApplicationConstant {
             String COMMON_VALUE = API + "/v1/value";
             String GENDER = "/gender";
             String MEMBER = "/member";
+            String MEMBER_DEFAULT = "/member-default";
             String RECOMMENDED_USERNAME = "/recommended-username";
         }
 
         interface User {
-            String USER_V1 = "/v1/user";
+            String USER_V1 = API + "/v1/user";
             String CHANGE_PASSWORD = "/change-password";
             String CURRENT_ROLE = "/current-role";
             String CHANGE_PASSWORD_ALLOWED_USER = "/allowed-user-to-change-password";
@@ -45,6 +46,8 @@ public interface IApplicationConstant {
             String ERROR_OLD_PASSWORD_NOT_MATCH = "Old password is invalid";
             String ERROR_NEW_PASSWORD_NOT_MATCH = "New password is not match";
             String ERROR_MESSAGE_USER_FOUND = "User not found according to username";
+
+            String ERROR_MESSAGE_DATA_NOT_FOUND = "No Data found";
         }
     }
 
@@ -59,7 +62,16 @@ public interface IApplicationConstant {
         }
 
         interface CommonRestParam {
-            String FIND_BY_NAME = "/{name}";
+            String FIND_BY_NAME = "name";
+
+            String PAGE = "page";
+            String SIZE = "size";
+        }
+
+        interface CommonRestPath {
+            String NAME = "name";
+
+            String FIND_BY_NAME = "find-by-name";
         }
     }
 

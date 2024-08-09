@@ -6,4 +6,6 @@ public interface ResponseResultDataDto {
 
     ResponseDataDto getResponseData();
 
+    void setResponseData(ResponseDataDto responseData);
+
 }
