@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,6 +26,8 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
+
+    private final PasswordEncoder encoder;
 
     private final UserDao userDao;
 
@@ -51,8 +54,6 @@ public class UserServiceImpl implements UserService {
 
         if (Objects.isNull(user))
             throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_FOUND);
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         if (!encoder.matches(changePasswordDto.getOldPassword(), user.getPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_OLD_PASSWORD_NOT_MATCH);
