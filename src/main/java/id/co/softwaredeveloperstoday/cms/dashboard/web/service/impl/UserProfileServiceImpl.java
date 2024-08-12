@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,6 +26,8 @@ import java.util.Objects;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserProfileServiceImpl implements UserProfileService {
 
+    private final PasswordEncoder encoder;
+
     private final UserProfileDao userProfileDao;
 
     private final UserProfileDtoMapper userProfileDtoMapper;
@@ -34,8 +37,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     public AddUserProfileDto addUserProfile(AddUserProfileDto userProfileDto) {
         if (!Objects.equals(userProfileDto.getPassword(), userProfileDto.getConfirmPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_NEW_PASSWORD_NOT_MATCH);
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         Role role = roleMapper.convertRoleDto(userProfileDto.getRoleDto());
         User user = userProfileDtoMapper.convertUser(userProfileDto);

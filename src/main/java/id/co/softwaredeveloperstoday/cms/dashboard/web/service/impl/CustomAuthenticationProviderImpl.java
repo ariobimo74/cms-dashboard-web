@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,12 +24,12 @@ import java.util.Objects;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomAuthenticationProviderImpl implements AuthenticationProvider {
 
+    private final PasswordEncoder encoder;
+
     private final UserService userService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
