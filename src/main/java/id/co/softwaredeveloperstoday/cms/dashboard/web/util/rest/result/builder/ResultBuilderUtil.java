@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ResultBuilderUtil extends BaseResponseDataBuilder {
@@ -67,6 +68,14 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
         resultDto.setResponseData(responseDataBadRequest(errorMessage));
 
         return badRequest(null, errorMessage);
+    }
+
+    public static <T> ResponseEntity<ResultListDto<T>> noContent() {
+        ResultListDtoImpl<T> resultListDto = new ResultListDtoImpl<>();
+        resultListDto.setData(Collections.emptyList());
+        resultListDto.setResponseData(responseDataOk());
+
+        return new ResponseEntity<>(resultListDto, HttpStatus.OK);
     }
 
 }

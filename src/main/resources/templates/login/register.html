@@ -29,66 +29,123 @@
         <![endif]-->
     </head>
     <body class="fullscreen">
-    <div class="wrapper" align="center" style="padding-top: 10%">
-        <section class="content">
-            <div style="width : 35%">
-                <div class="header">
-                    <h2 class="title">CMS Dashboard</h2>
-                </div>
-                <form name="registerForm" th:action="@{/register}" method="post">
-                    <div th:if="${param.error}" class="alert alert-error">
-                        Invalid username and password.
+        <div class="wrapper" align="center" style="padding-top: 10%">
+            <section class="content">
+                <div style="width : 35%">
+                    <div class="header">
+                        <h2 class="title">CMS Dashboard</h2>
                     </div>
-
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <p class="text-left">First name</p>
-                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name">
-                            </div>
-                            <div class="col-lg-6">
-                                <p class="text-left">Last name</p>
-                                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name">
+                    <form id="registerForm" name="registerForm">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <p class="text-left">First name</p>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required>
+                                </div>
+                                <div class="col-lg-6">
+                                    <p class="text-left">Last name</p>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <p class="text-left">Username</p>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
-                    </div>
-                    <div class="form-group">
-                        <p class="text-left">Email</p>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                        <p class="text-left">Password</p>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                        <p class="text-left gl-field-hint text-secondary">Minimum length is 8 characters.</p>
-                    </div>
+                        <div class="form-group">
+                            <p class="text-left">Id Card Number or Passport</p>
+                            <input type="text" class="form-control" id="idCardNumber" name="idCardNumber" placeholder="Id Card Number or Passport" required>
+                        </div>
 
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">Register</button>
-                    </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select class="form-control" id="gender">
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select class="form-control" id="role">
+                                <option>Select Role</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Member</label>
+                            <select class="form-control" id="member">
+                                <option>Select Member</option>
+                            </select>
+                        </div>
 
-                    <!-- Register buttons -->
-                    <div class="text-center">
-                        <p>Already have login and password?? <a href="#!">Sign In</a></p>
-                    </div>
-                </form>
-            </div>
-        </section>
-    </div>
-    <!-- jQuery -->
-    <script src="../js/jquery.min.js"></script>
+                        <div class="form-group">
+                            <p class="text-left">Phone Number</p>
+                            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                        </div>
+                        <div class="form-group">
+                            <p class="text-left">Email</p>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                        </div>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../js/bootstrap.min.js"></script>
+                        <div class="form-group">
+                            <p class="text-left">Place Of Birth</p>
+                            <input type="text" class="form-control" id="birthPlace" name="birthPlace" placeholder="Place of Birth" required>
+                        </div>
+                        <div class="form-group">
+                            <p class="text-left">Date Of Birth</p>
+                            <input type="date" class="form-control" id="birthDate" name="birthDate" placeholder="Date of Birth" required>
+                        </div>
 
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="../js/metisMenu.min.js"></script>
+                        <div class="form-group">
+                            <p class="text-left">Username</p>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Username to be used to login to dashboard" readonly>
+                        </div>
 
-    <!-- Custom Theme JavaScript -->
-    <script src="../js/startmin.js"></script>
+                        <div class="form-group" id="recommendedUsername" style="display: none">
+                        </div>
+
+                        <div class="form-group">
+                            <p class="text-left">Password</p>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password that will be used to login to dashboard" required>
+                        </div>
+                        <div class="form-group">
+                            <p class="text-left">Confirm Password</p>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <button type="submit" id="confirmBtn" class="btn btn-primary btn-block">Submit</button>
+                                </div>
+                                <div class="col-lg-6">
+                                    <button type="button" id="cancelBtn" class="btn btn-danger btn-block">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Login buttons -->
+                        <!--<div class="text-center">
+                            <p>Already have login and password?? <a href="#!">Sign In</a></p>
+                        </div>-->
+                    </form>
+                </div>
+            </section>
+        </div>
+        <!-- jQuery -->
+        <script src="../js/jquery.min.js"></script>
+
+        <!-- Sweet Alert -->
+        <script src="../js/sweetalert.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="../js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="../js/metisMenu.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="../js/startmin.js"></script>
+
+        <!-- Service -->
+        <script src="../js/service/_data.js"></script>
+        <script src="../js/service/cancel.js"></script>
+        <script src="../js/service/register.js"></script>
 
     </body>
 </html>
