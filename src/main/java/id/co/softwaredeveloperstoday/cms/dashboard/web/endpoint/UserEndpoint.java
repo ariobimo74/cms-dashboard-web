@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
         produces = MediaType.APPLICATION_JSON_VALUE
 )
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Validated
 public class UserEndpoint {
 
     private final UserService userService;

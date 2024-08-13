@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
         value = IApplicationConstant.RestVersion.Register.REGISTER_V1
 )
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Validated
 public class RegisterEndpoint {
 
     private final UserProfileService userProfileService;

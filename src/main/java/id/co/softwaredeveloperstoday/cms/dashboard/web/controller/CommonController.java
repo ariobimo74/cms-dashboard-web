@@ -41,4 +41,9 @@ public class CommonController {
         return "login/login";
     }
 
+    @GetMapping("/error/404")
+    public String handleError() {
+        return "error/404";
+    }
+
 }

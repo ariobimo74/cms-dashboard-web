@@ -48,6 +48,8 @@ public interface IApplicationConstant {
             String ERROR_MESSAGE_USER_FOUND = "User not found according to username";
 
             String ERROR_MESSAGE_DATA_NOT_FOUND = "No Data found";
+
+            String ERROR_MESSAGE_GENERAL_REQUIRED_FIELDS = " Required Parameter(s) should Be Filled: There is/are field(s)/parameter(s) that is/are empty/blank. Please insert Required Field(s) ";
         }
     }
 
