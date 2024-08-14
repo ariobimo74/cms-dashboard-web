@@ -1,5 +1,9 @@
 $('document').ready(function() {
     console.log("register")
+
+    generateContentForForm()
+    generatePasswordMatcher()
+
     var roles = []
     var genders = []
     var members = []
@@ -10,22 +14,22 @@ $('document').ready(function() {
     async function generateCommonValues() {
         await $.ajax({
             url: '/api/v1/value/gender',
-                type: 'get',
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function(result) {
-                    genders = result.data
-                }
+            type: 'get',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(result) {
+                genders = result.data
+            }
         })
     
         await $.ajax({
             url: '/api/v1/value/member',
-                type: 'get',
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function(result) {
-                    members = result.data
-                }
+            type: 'get',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(result) {
+                members = result.data
+            }
         })
 
         await $.ajax({
@@ -214,4 +218,17 @@ $('document').ready(function() {
         var value = $(this).attr('name');
         $('#username').val(value);
     });
+
+    function generatePasswordMatcher() {
+        $('#formContent').append(`
+            <div class="form-group">
+                <p class="text-left">Password</p>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password that will be used to login to dashboard" required>
+            </div>
+            <div class="form-group">
+                <p class="text-left">Confirm Password</p>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+        `)
+    }
 })
