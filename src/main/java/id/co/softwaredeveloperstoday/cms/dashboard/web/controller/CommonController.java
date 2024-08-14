@@ -46,4 +46,9 @@ public class CommonController {
         return "error/404";
     }
 
+    @GetMapping("/profile/{id}")
+    public String viewUserProfile() {
+        return "user/detail";
+    }
+
 }

@@ -18,15 +18,39 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddUserProfileDto extends UserProfileDto {
+public class UserProfileDto {
 
     @NotNull
     @NotBlank
     @NotEmpty
-    private String password;
+    private String name;
     @NotNull
     @NotBlank
     @NotEmpty
-    private String confirmPassword;
+    private String idCardNumber;
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date dateOfBirth;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String placeOfBirth;
+    @NotNull
+    private EGenderType gender;
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String username;
+
+    @NotNull
+    private RoleDto roleDto = new RoleDto(
+            Long.parseLong(String.valueOf(ERoleName.USER.ordinal())), ERoleName.USER
+    );
+
+    private String mobilePhoneNumber;
+    private String email;
+    private String photoUrl;
+    private String allergy;
+    private EMemberLevel memberLevel = EMemberLevel.REGULAR;
 
 }

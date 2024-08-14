@@ -2,6 +2,7 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserProfileDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.RoleMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.UserProfileDtoMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.Role;
@@ -10,6 +11,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.DataNotFoundException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,14 @@ public class UserProfileServiceImpl implements UserProfileService {
         userProfile.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 
         return userProfileDtoMapper.convertAddUserProfileDto(userProfileDao.save(userProfile));
+    }
+
+    @Override
+    public UserProfileDetailDto findUserById(Long userProfileId) {
+        return userProfileDtoMapper.convertUserProfileDetailDto(userProfileDao.findById(userProfileId)
+                .orElseThrow(() -> new DataNotFoundException(
+                IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND)
+        ));
     }
 
 }

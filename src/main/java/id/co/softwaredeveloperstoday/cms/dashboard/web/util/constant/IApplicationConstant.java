@@ -28,6 +28,8 @@ public interface IApplicationConstant {
 
         interface User {
             String USER_V1 = API + "/v1/user";
+
+            String VIEW_USER_PROFILE = "/profile/{id}";
             String CHANGE_PASSWORD = "/change-password";
             String CURRENT_ROLE = "/current-role";
             String CHANGE_PASSWORD_ALLOWED_USER = "/allowed-user-to-change-password";
@@ -72,8 +74,13 @@ public interface IApplicationConstant {
 
         interface CommonRestPath {
             String NAME = "name";
+            String ID = "id";
 
             String FIND_BY_NAME = "find-by-name";
+        }
+
+        interface TimeZone {
+            String DEFAULT = "Asia/Jakarta";
         }
     }
 

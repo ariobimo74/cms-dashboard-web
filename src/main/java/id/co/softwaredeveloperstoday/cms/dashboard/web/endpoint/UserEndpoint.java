@@ -1,9 +1,13 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.endpoint;
 
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RequestChangePasswordDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.DataNotFoundException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.UserNotAllowedException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultDto;
@@ -33,6 +37,18 @@ import java.util.stream.Collectors;
 public class UserEndpoint {
 
     private final UserService userService;
+    private final UserProfileService userProfileService;
+
+    @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILE)
+    public ResponseEntity<ResultDto<UserProfileDetailDto>> getUserProfile(
+            @PathVariable(IApplicationConstant.CommonValue.CommonRestPath.ID) Long id
+    ) {
+        try {
+            return ResultBuilderUtil.ok(userProfileService.findUserById(id));
+        } catch (DataNotFoundException e) {
+            return ResultBuilderUtil.notFound(e.getMessage());
+        }
+    }
 
     @PostMapping(IApplicationConstant.RestVersion.User.CHANGE_PASSWORD)
     public ResponseEntity<ResultDto<String>> changePassword(

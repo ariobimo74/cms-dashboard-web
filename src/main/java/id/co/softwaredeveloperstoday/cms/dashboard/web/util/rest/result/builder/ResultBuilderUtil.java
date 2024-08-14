@@ -58,6 +58,14 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
         return new ResponseEntity<>(resultDto, HttpStatus.BAD_REQUEST);
     }
 
+    public static <T> ResponseEntity<ResultDto<T>> notFound(T data, String errorMessage) {
+        ResultDtoImpl<T> resultDto = new ResultDtoImpl<>();
+        resultDto.setData(data);
+        resultDto.setResponseData(responseDataBadRequest(errorMessage));
+
+        return new ResponseEntity<>(resultDto, HttpStatus.NOT_FOUND);
+    }
+
     public static <T> ResponseEntity<ResultDto<T>> internalServerError(String errorMessage) {
         return internalServerError(null, errorMessage);
     }
@@ -68,6 +76,14 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
         resultDto.setResponseData(responseDataBadRequest(errorMessage));
 
         return badRequest(null, errorMessage);
+    }
+
+    public static <T> ResponseEntity<ResultDto<T>> notFound(String errorMessage) {
+        ResultDtoImpl<String> resultDto = new ResultDtoImpl<>();
+        resultDto.setData(errorMessage);
+        resultDto.setResponseData(responseDataBadRequest(errorMessage));
+
+        return notFound(null, errorMessage);
     }
 
     public static <T> ResponseEntity<ResultListDto<T>> noContent() {
