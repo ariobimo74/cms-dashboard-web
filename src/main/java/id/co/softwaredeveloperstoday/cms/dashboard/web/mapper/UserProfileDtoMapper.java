@@ -1,12 +1,16 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.mapper;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RoleDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
 import java.util.Objects;
 
 @Mapper(componentModel = "spring")
@@ -21,6 +25,7 @@ public abstract class UserProfileDtoMapper {
     public abstract AddUserProfileDto convertAddUserProfileDto(UserProfile userProfile);
 
     @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "roleDto", expression = "java(determineOneUserRole(userProfile.getUser().getUserRoles()))")
     @Mapping(target = "firstName", expression = "java(splitName(userProfile.getName(), 0))")
     @Mapping(target = "lastName", expression = "java(splitName(userProfile.getName(), 1))")
     public abstract UserProfileDetailDto convertUserProfileDetailDto(UserProfile userProfile);
@@ -46,5 +51,10 @@ public abstract class UserProfileDtoMapper {
         } catch (IndexOutOfBoundsException e) {
             return "";
         }
+    }
+
+    RoleDto determineOneUserRole(List<UserRole> userRoles) {
+        return userRoles.stream().findFirst().map(role -> new RoleDto(role.getRole().getId(), role.getRole().getRoleName()))
+                .orElse(new RoleDto((long) ERoleName.USER.ordinal(), ERoleName.USER));
     }
 }

@@ -14,16 +14,10 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfileDetailDto extends UserProfileDto {
+public class UserProfileDetailDto extends EditUserProfileDto {
 
     private String firstName;
     private String lastName;
-
-    @NotNull
-    private Long id;
-
-    @NotNull
-    private Long userId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = IApplicationConstant.CommonValue.TimeZone.DEFAULT)
     private Date dateOfBirth;
