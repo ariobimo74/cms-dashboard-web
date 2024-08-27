@@ -1,4 +1,4 @@
-function generateContentForForm() {
+async function generateContentForForm() {
     $('#formContent').empty().append(`
                         <div class="form-group">
                             <div class="row">
@@ -39,7 +39,7 @@ function generateContentForForm() {
 
                         <div class="form-group">
                             <p class="text-left">Phone Number</p>
-                            <input type="number" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                            <input type="number" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" min="0" step="1">
                         </div>
                         <div class="form-group">
                             <p class="text-left">Email</p>

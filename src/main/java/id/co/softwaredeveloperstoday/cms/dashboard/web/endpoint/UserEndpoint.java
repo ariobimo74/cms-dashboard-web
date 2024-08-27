@@ -1,6 +1,7 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.endpoint;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.EditUserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RequestChangePasswordDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
@@ -74,6 +75,23 @@ public class UserEndpoint {
     @GetMapping(IApplicationConstant.RestVersion.User.CHANGE_PASSWORD_ALLOWED_USER)
     public ResponseEntity<ResultListDto<ERoleName>> getAllowedUserToChangePassword(Authentication authentication) {
         return ResultBuilderUtil.ok(List.of(ERoleName.SUPER_ADMIN));
+    }
+
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ResultDto<UserProfileDetailDto>> updateUser(
+            Authentication authentication, @Valid @RequestBody EditUserProfileDto editUserProfileDto
+    ) {
+        try {
+            return ResultBuilderUtil.ok(userProfileService.updateUserProfile(authentication, editUserProfileDto));
+        } catch (DataNotFoundException e) {
+            return ResultBuilderUtil.notFound(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultBuilderUtil.internalServerError(e.getMessage());
+        }
     }
 
 }

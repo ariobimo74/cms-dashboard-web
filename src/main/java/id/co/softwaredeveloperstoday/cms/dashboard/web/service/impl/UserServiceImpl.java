@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         User user = userDao.findByUsername(changePasswordDto.getUsername());
 
         if (Objects.isNull(user))
-            throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_FOUND);
+            throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_FOUND_USERNAME);
 
         if (!encoder.matches(changePasswordDto.getOldPassword(), user.getPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_OLD_PASSWORD_NOT_MATCH);

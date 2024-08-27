@@ -1,5 +1,6 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.controller;
 
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,9 +47,14 @@ public class CommonController {
         return "error/404";
     }
 
-    @GetMapping("/profile/{id}")
+    @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILE)
     public String viewUserProfile() {
         return "user/detail";
+    }
+
+    @GetMapping(IApplicationConstant.RestVersion.User.EDIT_USER_PROFILE)
+    public String editUserProfile() {
+        return "user/edit";
     }
 
 }
