@@ -95,9 +95,6 @@ public class UserProfile extends CommonAudit {
     @Column(name = "is_verification_user")
     private Boolean isVerifiedUser;
 
-    @Column(name = "allergy")
-    private String allergy;
-
     @Column(name = "job")
     private String job;
 
