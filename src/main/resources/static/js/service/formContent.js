@@ -14,7 +14,7 @@ async function generateContentForForm() {
                         </div>
                         <div class="form-group">
                             <p class="text-left">Id Card Number or Passport</p>
-                            <input type="text" class="form-control" id="idCardNumber" name="idCardNumber" placeholder="Id Card Number or Passport" required>
+                            <input type="number" class="form-control" id="idCardNumber" name="idCardNumber" placeholder="Id Card Number or Passport" min="0" step="1" required>
                         </div>
 
                         <div class="form-group" id="genderFormGroup">

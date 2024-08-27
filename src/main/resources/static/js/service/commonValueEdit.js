@@ -119,3 +119,37 @@ async function generateRecommendedUsername() {
     }
     $('#recommendedUsername').show()
 }
+
+$(document).ready(function() {
+    $('#phoneNumber').on('keydown', function(event) {
+        validateNumberInput(event)
+    })
+
+    
+    $('#idCardNumber').on('keydown', function(event) {
+        validateNumberInput(event)
+    })
+
+    function validateNumberInput(event) {
+        var key = event.which || event.keyCode;
+        
+        // Allow: backspace, delete, tab, escape, enter, and .
+        if ($.inArray(key, [46, 8, 9, 27, 13, 190]) !== -1 ||
+            // Allow: Ctrl+A
+            (key == 65 && event.ctrlKey === true) ||
+            // Allow: Ctrl+C
+            (key == 67 && event.ctrlKey === true) ||
+            // Allow: Ctrl+X
+            (key == 88 && event.ctrlKey === true) ||
+            // Allow: home, end, left, right
+            (key >= 35 && key <= 39)) {
+            // Let it happen, don't do anything
+            return;
+        }
+        
+        // Ensure that it is a number and stop the keypress
+        if (event.shiftKey || (key < 48 || key > 57) && (key < 96 || key > 105)) {
+            event.preventDefault();
+        }
+    }
+})
