@@ -104,7 +104,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         userProfile.setMobilePhoneNumber(editUserProfileDto.getMobilePhoneNumber());
         userProfile.setEmail(editUserProfileDto.getEmail());
         userProfile.setPhotoUrl(editUserProfileDto.getPhotoUrl());
-        userProfile.setAllergy(editUserProfileDto.getAllergy());
         userProfile.setMemberLevel(editUserProfileDto.getMemberLevel());
 
         return userProfileDtoMapper.convertUserProfileDetailDto(userProfileDao.save(userProfile));

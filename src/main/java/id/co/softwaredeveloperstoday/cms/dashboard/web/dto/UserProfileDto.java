@@ -50,7 +50,6 @@ public class UserProfileDto {
     private String mobilePhoneNumber;
     private String email;
     private String photoUrl;
-    private String allergy;
     private EMemberLevel memberLevel = EMemberLevel.REGULAR;
 
 }
