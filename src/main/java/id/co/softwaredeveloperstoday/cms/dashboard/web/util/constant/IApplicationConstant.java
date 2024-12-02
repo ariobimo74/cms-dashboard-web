@@ -24,6 +24,8 @@ public interface IApplicationConstant {
             String MEMBER = "/member";
             String MEMBER_DEFAULT = "/member-default";
             String RECOMMENDED_USERNAME = "/recommended-username";
+
+            String ADDITIONAL_PAGINATION_PARAMETERS = "/additional-pagination-parameters";
         }
 
         interface User {

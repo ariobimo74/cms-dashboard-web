@@ -2,6 +2,7 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.endpoint;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RequestRecommendedUsernameDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.ResponseCommonEnumDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.ResponsePaginationDataDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.CommonValueService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EMemberLevel;
@@ -51,6 +52,11 @@ public class CommonValueEndpoint {
             @RequestBody @Valid RequestRecommendedUsernameDto recommendedUsernameDto
     ) {
         return ResultBuilderUtil.ok(commonValueService.getRecommendedUsername(recommendedUsernameDto));
+    }
+
+    @GetMapping(IApplicationConstant.RestVersion.CommonValue.ADDITIONAL_PAGINATION_PARAMETERS)
+    public ResponseEntity<ResultDto<ResponsePaginationDataDto>> getPaginationParameters() {
+        return ResultBuilderUtil.ok(new ResponsePaginationDataDto());
     }
 
 }
