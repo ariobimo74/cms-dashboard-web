@@ -1,6 +1,7 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EGenderType;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EMemberLevel;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
@@ -29,7 +30,7 @@ public class UserProfileDto {
     @NotEmpty
     private String idCardNumber;
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = IApplicationConstant.CommonValue.TimeZone.DEFAULT)
     private Date dateOfBirth;
     @NotNull
     @NotBlank

@@ -3,6 +3,7 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.mapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RoleDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
@@ -57,4 +58,8 @@ public abstract class UserProfileDtoMapper {
         return userRoles.stream().findFirst().map(role -> new RoleDto(role.getRole().getId(), role.getRole().getRoleName()))
                 .orElse(new RoleDto((long) ERoleName.USER.ordinal(), ERoleName.USER));
     }
+
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "roleDto", expression = "java(determineOneUserRole(userProfile.getUser().getUserRoles()))")
+    public abstract UserProfileDto convertUserProfileDto(UserProfile userProfile);
 }

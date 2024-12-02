@@ -29,6 +29,7 @@ public interface IApplicationConstant {
         interface User {
             String USER_V1 = API + "/v1/user";
 
+            String VIEW_USER_PROFILES = "/profiles";
             String VIEW_USER_PROFILE = "/profile/{id}";
             String EDIT_USER_PROFILE = "/edit/{id}";
 
@@ -71,6 +72,8 @@ public interface IApplicationConstant {
 
         interface CommonRestParam {
             String FIND_BY_NAME = "name";
+            String FIND_BY_USER_NAME = "username";
+            String FIND_BY_DATE_OF_BIRTH = "date-of-birth";
 
             String PAGE = "page";
             String SIZE = "size";
@@ -85,6 +88,16 @@ public interface IApplicationConstant {
 
         interface TimeZone {
             String DEFAULT = "Asia/Jakarta";
+        }
+
+        interface Pagination {
+            Integer DEFAULT_PAGE_NUMBER = 1;
+            Integer DEFAULT_PAGE_SIZE = 10;
+
+            String DEFAULT_SORT_BY = "id";
+
+            String SORT_TYPE_PARAMETER = "sort-type";
+            String SORT_BY_PARAMETER = "sort-by";
         }
     }
 
