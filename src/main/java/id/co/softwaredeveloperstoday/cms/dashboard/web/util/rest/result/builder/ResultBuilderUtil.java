@@ -94,4 +94,12 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
         return new ResponseEntity<>(resultListDto, HttpStatus.OK);
     }
 
+    public static <T> ResponseEntity<ResultPageDto<T>> noPageContent() {
+        ResultPageDtoImpl<T> resultListDto = new ResultPageDtoImpl<>();
+        resultListDto.setData(Collections.emptyList());
+        resultListDto.setResponseData(responseDataOk());
+
+        return new ResponseEntity<>(resultListDto, HttpStatus.NO_CONTENT);
+    }
+
 }

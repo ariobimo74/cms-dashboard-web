@@ -5,6 +5,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserProfileDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.EditUserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.RoleMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.UserProfileDtoMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.Role;
@@ -13,22 +14,32 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EUserSortBy;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.DataNotFoundException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserProfileServiceImpl implements UserProfileService {
@@ -107,6 +118,58 @@ public class UserProfileServiceImpl implements UserProfileService {
         userProfile.setMemberLevel(editUserProfileDto.getMemberLevel());
 
         return userProfileDtoMapper.convertUserProfileDetailDto(userProfileDao.save(userProfile));
+    }
+
+    @Override
+    public Page<UserProfileDto> getAllPaging(
+            String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort
+    ) {
+        Date searchDateFormatted = null;
+        if (Objects.nonNull(searchDate)) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                searchDateFormatted = dateFormat.parse(searchDate);
+            } catch (ParseException e) {
+                log.info("Handled Date Parsing Exception : " + searchDate);
+            }
+        }
+
+        Sort sort = Sort.unsorted();
+        if (Objects.nonNull(sortBy)) {
+            sort = Sort.by(sortBy.getName());
+            if (isAscendingSort) sort.ascending();
+        }
+
+        Pageable pageable = PageRequest.of(
+                Optional.ofNullable(page).orElse(IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_NUMBER) -
+                        IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_NUMBER,
+                Optional.ofNullable(size).orElse(IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_SIZE), sort
+        );
+
+        Page<UserProfile> userProfiles = userProfileDao.findAll(specificationUserProfile(searchName, searchUsername, searchDateFormatted), pageable);
+
+        if (userProfiles.getTotalElements() == 0)
+            throw new DataNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND);
+        else return userProfiles.map(userProfileDtoMapper::convertUserProfileDto);
+    }
+
+    private Specification<UserProfile> specificationUserProfile(String searchName, String searchUsername, Date searchDate) {
+        return (root, query, criteriaBuilder) -> {
+            Join<UserProfile, User> userJoin = root.join("user", JoinType.LEFT);
+            Predicate userPredicate = criteriaBuilder.conjunction();
+            Predicate userProfilePredicate = criteriaBuilder.conjunction();
+
+            if (Objects.nonNull(searchDate))
+                userProfilePredicate = criteriaBuilder.equal(root.get("dateOfBirth"), searchDate);
+
+            if (Objects.nonNull(searchName))
+                userProfilePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), '%' + searchName.toLowerCase() + '%');
+
+            if (Objects.nonNull(searchUsername))
+                userPredicate = criteriaBuilder.like(criteriaBuilder.lower(userJoin.get("username")), '%' + searchUsername.toLowerCase() + '%');
+
+            return criteriaBuilder.and(userPredicate, userProfilePredicate);
+        };
     }
 
 }
