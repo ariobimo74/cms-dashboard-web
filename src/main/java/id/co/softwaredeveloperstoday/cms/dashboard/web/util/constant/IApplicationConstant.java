@@ -32,6 +32,7 @@ public interface IApplicationConstant {
             String USER_V1 = API + "/v1/user";
 
             String VIEW_USER_PROFILES = "/profiles";
+            String VIEW_USER_PROFILES_DATA_TABLE = "/profiles-data-table";
             String VIEW_USER_PROFILE = "/profile/{id}";
             String EDIT_USER_PROFILE = "/edit/{id}";
 

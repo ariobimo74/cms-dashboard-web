@@ -57,4 +57,9 @@ public class CommonController {
         return "user/edit";
     }
 
+    @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILES)
+    public String viewUserProfiles() {
+        return "user/table";
+    }
+
 }
