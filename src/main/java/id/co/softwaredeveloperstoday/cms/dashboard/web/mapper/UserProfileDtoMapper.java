@@ -59,7 +59,4 @@ public abstract class UserProfileDtoMapper {
                 .orElse(new RoleDto((long) ERoleName.USER.ordinal(), ERoleName.USER));
     }
 
-    @Mapping(target = "username", source = "user.username")
-    @Mapping(target = "roleDto", expression = "java(determineOneUserRole(userProfile.getUser().getUserRoles()))")
-    public abstract UserProfileDto convertUserProfileDto(UserProfile userProfile);
 }

@@ -16,7 +16,9 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultLi
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultPageDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.builder.ResultBuilderUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -44,7 +46,7 @@ public class UserEndpoint {
     private final UserProfileService userProfileService;
 
     @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILES)
-    public ResponseEntity<ResultPageDto<UserProfileDto>> getUserProfiles(
+    public ResponseEntity<ResultPageDto<UserProfileDetailDto>> getUserProfiles(
             @RequestParam(
                     value = IApplicationConstant.CommonValue.CommonRestParam.PAGE,
                     required = false, defaultValue = "1") Integer page,
@@ -128,6 +130,16 @@ public class UserEndpoint {
             e.printStackTrace();
             return ResultBuilderUtil.internalServerError(e.getMessage());
         }
+    }
+
+    @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILES_DATA_TABLE)
+    public ResponseEntity<ResponseDataTableDto<UserProfileDetailDto>> getUserProfilesDataTable(
+            @RequestParam int draw,
+            @RequestParam int start,
+            @RequestParam int length,
+            @RequestParam(required = false) String search
+    ) {
+        return new ResponseEntity<>(userProfileService.getAllPagingDataTable(draw, search, (start / length) + 1, length), HttpStatus.OK);
     }
 
 }

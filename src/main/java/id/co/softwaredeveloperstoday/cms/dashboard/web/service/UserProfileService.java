@@ -1,9 +1,6 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.service;
 
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.EditUserProfileDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.*;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EUserSortBy;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -18,6 +15,8 @@ public interface UserProfileService {
 
     UserProfileDetailDto updateUserProfile(Authentication authentication, EditUserProfileDto editUserProfileDto);
 
-    Page<UserProfileDto> getAllPaging(String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort);
+    Page<UserProfileDetailDto> getAllPaging(String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort);
+
+    ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(int draw, String search, Integer page, Integer size);
 
 }

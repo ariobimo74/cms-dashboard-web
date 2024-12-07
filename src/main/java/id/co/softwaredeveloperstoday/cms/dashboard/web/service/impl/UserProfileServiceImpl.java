@@ -2,10 +2,7 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.RoleDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserProfileDao;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.EditUserProfileDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.*;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.RoleMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.UserProfileDtoMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.Role;
@@ -19,6 +16,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.DataNotFou
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -121,7 +120,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Page<UserProfileDto> getAllPaging(
+    public Page<UserProfileDetailDto> getAllPaging(
             String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort
     ) {
         Date searchDateFormatted = null;
@@ -134,23 +133,31 @@ public class UserProfileServiceImpl implements UserProfileService {
             }
         }
 
-        Sort sort = Sort.unsorted();
-        if (Objects.nonNull(sortBy)) {
-            sort = Sort.by(sortBy.getName());
-            if (isAscendingSort) sort.ascending();
-        }
-
-        Pageable pageable = PageRequest.of(
-                Optional.ofNullable(page).orElse(IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_NUMBER) -
-                        IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_NUMBER,
-                Optional.ofNullable(size).orElse(IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_SIZE), sort
+        Page<UserProfile> userProfiles = userProfileDao.findAll(
+                specificationUserProfile(
+                        searchName, searchUsername, searchDateFormatted), pageable(page, size, sortBy, isAscendingSort
+                )
         );
-
-        Page<UserProfile> userProfiles = userProfileDao.findAll(specificationUserProfile(searchName, searchUsername, searchDateFormatted), pageable);
 
         if (userProfiles.getTotalElements() == 0)
             throw new DataNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND);
-        else return userProfiles.map(userProfileDtoMapper::convertUserProfileDto);
+        else return userProfiles.map(userProfileDtoMapper::convertUserProfileDetailDto);
+    }
+
+    @Override
+    public ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(int draw, String search, Integer page, Integer size) {
+        Page<UserProfile> userProfiles;
+        if (StringUtils.isBlank(search))
+            userProfiles = userProfileDao.findAll(pageable(page, size, null, false));
+        else userProfiles = userProfileDao.findAll(
+                specificationUserProfileDataTable(search), pageable(page, size, null, false)
+        );
+
+        if (userProfiles.getTotalElements() == 0)
+            return new ResponseDataTableDto<>(draw, 0, 0, new ArrayList<>());
+        else return new ResponseDataTableDto<>(draw, userProfileDao.count(), userProfiles.getTotalElements(),
+                userProfiles.getContent().stream().map(userProfileDtoMapper::convertUserProfileDetailDto).collect(Collectors.toList())
+        );
     }
 
     private Specification<UserProfile> specificationUserProfile(String searchName, String searchUsername, Date searchDate) {
@@ -170,6 +177,43 @@ public class UserProfileServiceImpl implements UserProfileService {
 
             return criteriaBuilder.and(userPredicate, userProfilePredicate);
         };
+    }
+
+    private Specification<UserProfile> specificationUserProfileDataTable(String search) {
+        return (root, query, criteriaBuilder) -> {
+            Join<UserProfile, User> userJoin = root.join("user", JoinType.LEFT);
+            Join<User, UserRole> userRoleJoin = userJoin.join("userRoles", JoinType.LEFT);
+            Join<UserRole, Role> roleJoin = userRoleJoin.join("role", JoinType.LEFT);
+
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(criteriaBuilder.function("TO_CHAR", String.class, root.get("dateOfBirth"), criteriaBuilder.literal("YYYY-MM-DD")), '%' + search + '%'),
+                    criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), '%' + search.toLowerCase() + '%'),
+                            criteriaBuilder.like(criteriaBuilder.lower(userJoin.get("username")), '%' + search.toLowerCase() + '%')
+                    ),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("idCardNumber")), '%' + search.toLowerCase() + '%'),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("placeOfBirth")), '%' + search.toLowerCase() + '%'),
+                    criteriaBuilder.equal(root.get("gender").as(String.class), search.toUpperCase()),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), '%' + search.toLowerCase() + '%'),
+                    criteriaBuilder.like(root.get("memberLevel").as(String.class), '%' + search.toUpperCase() + '%'),
+                    criteriaBuilder.like(criteriaBuilder.lower((roleJoin.get("roleName").as(String.class))), '%' + search.toLowerCase() + '%'),
+                    criteriaBuilder.like(criteriaBuilder.lower((roleJoin.get("roleName").as(String.class))), '%' + search.toLowerCase().replace(StringUtils.SPACE, "_") + '%')
+            );
+        };
+    }
+
+    private Pageable pageable(Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort) {
+        Sort sort = Sort.unsorted();
+        if (Objects.nonNull(sortBy)) {
+            sort = Sort.by(sortBy.getName());
+            if (isAscendingSort) sort.ascending();
+        }
+
+        return PageRequest.of(
+                Optional.ofNullable(page).orElse(IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_NUMBER) -
+                        IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_NUMBER,
+                Optional.ofNullable(size).orElse(IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_SIZE), sort
+        );
     }
 
 }
