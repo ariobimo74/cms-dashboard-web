@@ -20,4 +20,6 @@ public interface UserProfileService {
 
     ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort);
 
+    EditUserProfileDto deleteUserByEditingIsDelete(Long id);
+
 }
