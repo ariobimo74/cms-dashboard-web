@@ -1,8 +1,10 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserDao;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserReplicaDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RequestChangePasswordDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserReplica;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
@@ -10,12 +12,9 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNo
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.UserNotAllowedException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
 
     private final UserDao userDao;
+    private final UserReplicaDao userReplicaDao;
 
     @Override
     public User findUserByUserName(String username) {
@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUserByUsernameIn(List<String> usernames) {
-        return userDao.findAll(specificationUsernameIn(usernames));
+    public List<UserReplica> getUserByUsernameIn(List<String> usernames) {
+        return userReplicaDao.findByUsernameIn(usernames);
     }
 
     @Override
@@ -71,10 +71,6 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
 
         return IApplicationConstant.CommonValue.RestResponseValue.SUCCESS;
-    }
-
-    private Specification<User> specificationUsernameIn(List<String> usernames) {
-        return ((root, query, criteriaBuilder) -> root.get("username").in(usernames));
     }
 
 }

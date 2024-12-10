@@ -2,7 +2,7 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RequestRecommendedUsernameDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.ResponseCommonEnumDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserReplica;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.CommonValueService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EGenderType;
@@ -51,7 +51,7 @@ public class CommonValueServiceImpl implements CommonValueService {
                 recommendedUsernameDto.getMobilePhoneNumber()
         )).stream().filter(Objects::nonNull).filter(Strings::isNotBlank).collect(Collectors.toList());
         recommendedUsernameList.addAll(convertNameToRecommended(recommendedUsernameDto.getName(), recommendedUsernameDto.getBirthDate()));
-        List<User> users = userService.getUserByUsernameIn(recommendedUsernameList);
+        List<UserReplica> users = userService.getUserByUsernameIn(recommendedUsernameList);
 
         if (CollectionUtils.isEmpty(users))
             return recommendedUsernameList.stream().distinct().collect(Collectors.toList());
