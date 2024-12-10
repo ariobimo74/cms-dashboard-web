@@ -9,9 +9,9 @@ spring:
       repositories:
         bootstrap-mode: lazy
   profiles:
-    active: local
+    active: dev
   application:
-    name: cms-k-linik-web
+    name: cms-dashboard-web
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
