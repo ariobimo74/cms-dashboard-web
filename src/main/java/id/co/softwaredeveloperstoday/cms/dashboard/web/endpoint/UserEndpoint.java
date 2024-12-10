@@ -17,7 +17,6 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultLi
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultPageDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.builder.ResultBuilderUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -143,8 +142,19 @@ public class UserEndpoint {
             @RequestParam(required = false, value = "order[0][dir]") String orderDir
     ) {
         return new ResponseEntity<>(userProfileService.getAllPagingDataTable(draw, search, (start / length) + 1, length,
-                Stream.of(EDataTableSortBy.values()).filter(s -> s.ordinal() == orderColumn).findFirst().orElse(EDataTableSortBy.NAME),
+                Stream.of(EDataTableSortBy.values()).filter(s -> s.ordinal() == orderColumn-1).findFirst().orElse(EDataTableSortBy.NAME),
                 orderDir.equalsIgnoreCase(ESortType.ASC.toString())), HttpStatus.OK);
+    }
+
+    @DeleteMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILE)
+    public ResponseEntity<ResultDto<EditUserProfileDto>> deleteUser(
+            @PathVariable(value = IApplicationConstant.CommonValue.CommonRestPath.ID) Long id
+    ) {
+        try {
+            return ResultBuilderUtil.ok(userProfileService.deleteUserByEditingIsDelete(id));
+        } catch (DataNotFoundException e) {
+            return ResultBuilderUtil.notFound(e.getMessage());
+        }
     }
 
 }

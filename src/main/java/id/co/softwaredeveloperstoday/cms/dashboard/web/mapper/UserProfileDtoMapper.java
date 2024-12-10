@@ -1,9 +1,6 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.mapper;
 
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RoleDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDetailDto;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.UserProfileDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.*;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
@@ -30,6 +27,10 @@ public abstract class UserProfileDtoMapper {
     @Mapping(target = "firstName", expression = "java(splitName(userProfile.getName(), 0))")
     @Mapping(target = "lastName", expression = "java(splitName(userProfile.getName(), 1))")
     public abstract UserProfileDetailDto convertUserProfileDetailDto(UserProfile userProfile);
+
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "roleDto", expression = "java(determineOneUserRole(userProfile.getUser().getUserRoles()))")
+    public abstract EditUserProfileDto convertEditUserProfileDto(UserProfile userProfile);
 
     String splitName(String fullName, int index) {
         if (Objects.isNull(fullName)) return "";

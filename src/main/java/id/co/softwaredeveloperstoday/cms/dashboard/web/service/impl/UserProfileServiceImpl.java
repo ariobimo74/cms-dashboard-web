@@ -161,6 +161,18 @@ public class UserProfileServiceImpl implements UserProfileService {
         );
     }
 
+    @Override
+    public EditUserProfileDto deleteUserByEditingIsDelete(Long id) {
+        UserProfile userProfile = userProfileDao.findById(id).orElseThrow(
+                () -> new DataNotFoundException(
+                        IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND
+        ));
+        userProfile.setIsDelete(true);
+        userProfile.getUser().setIsDelete(true);
+
+        return userProfileDtoMapper.convertEditUserProfileDto(userProfileDao.save(userProfile));
+    }
+
     private Specification<UserProfile> specificationUserProfile(String searchName, String searchUsername, Date searchDate) {
         return (root, query, criteriaBuilder) -> {
             Join<UserProfile, User> userJoin = root.join("user", JoinType.LEFT);
