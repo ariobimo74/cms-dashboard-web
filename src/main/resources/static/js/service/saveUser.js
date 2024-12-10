@@ -31,12 +31,12 @@ async function executeSaveUser(method, url, jsonData, clearInput) {
                         icon: "success",
                         closeOnClickOutside: true,
                         closeOnEsc: true,
-                        button: "Redirect to Home",
+                        button: "Redirect to User Profiles Menu",
                         onClose: function () {
-                            window.location.href = "/dashboard"
+                            window.location.href = "/profiles"
                         }
                     }).then((value) => {
-                        if (value) window.location.href = "/dashboard"
+                        if (value) window.location.href = "/profiles"
                     })
                 }
             else swal(result.responseData.acknowledge, result.responseData.responseMessage, "error")

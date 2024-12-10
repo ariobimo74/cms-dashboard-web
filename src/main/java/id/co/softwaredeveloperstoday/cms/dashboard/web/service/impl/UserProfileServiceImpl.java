@@ -11,6 +11,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EDataTableSortBy;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EUserSortBy;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.DataNotFoundException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
@@ -135,7 +136,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         Page<UserProfile> userProfiles = userProfileDao.findAll(
                 specificationUserProfile(
-                        searchName, searchUsername, searchDateFormatted), pageable(page, size, sortBy, isAscendingSort
+                        searchName, searchUsername, searchDateFormatted), pageable(page, size, sortBy.getName(), isAscendingSort
                 )
         );
 
@@ -145,12 +146,12 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(int draw, String search, Integer page, Integer size) {
+    public ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort) {
         Page<UserProfile> userProfiles;
         if (StringUtils.isBlank(search))
-            userProfiles = userProfileDao.findAll(pageable(page, size, null, false));
+            userProfiles = userProfileDao.findAll(pageable(page, size, dataTableSortBy.getName(), isAscendingSort));
         else userProfiles = userProfileDao.findAll(
-                specificationUserProfileDataTable(search), pageable(page, size, null, false)
+                specificationUserProfileDataTable(search), pageable(page, size, dataTableSortBy.getName(), isAscendingSort)
         );
 
         if (userProfiles.getTotalElements() == 0)
@@ -202,11 +203,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         };
     }
 
-    private Pageable pageable(Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort) {
+    private Pageable pageable(Integer page, Integer size, String sortBy, boolean isAscendingSort) {
         Sort sort = Sort.unsorted();
-        if (Objects.nonNull(sortBy)) {
-            sort = Sort.by(sortBy.getName());
-            if (isAscendingSort) sort.ascending();
+        if (StringUtils.isNotBlank(sortBy)) {
+            sort = Sort.by(sortBy);
+            if (isAscendingSort) sort = sort.ascending();
+            else sort = sort.descending();
         }
 
         return PageRequest.of(

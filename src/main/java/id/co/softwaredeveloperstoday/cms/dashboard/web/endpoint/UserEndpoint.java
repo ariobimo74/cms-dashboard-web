@@ -5,6 +5,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.*;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EDataTableSortBy;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ESortType;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EUserSortBy;
@@ -27,10 +28,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(
@@ -137,9 +138,13 @@ public class UserEndpoint {
             @RequestParam int draw,
             @RequestParam int start,
             @RequestParam int length,
-            @RequestParam(required = false) String search
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false, value = "order[0][column]") int orderColumn,
+            @RequestParam(required = false, value = "order[0][dir]") String orderDir
     ) {
-        return new ResponseEntity<>(userProfileService.getAllPagingDataTable(draw, search, (start / length) + 1, length), HttpStatus.OK);
+        return new ResponseEntity<>(userProfileService.getAllPagingDataTable(draw, search, (start / length) + 1, length,
+                Stream.of(EDataTableSortBy.values()).filter(s -> s.ordinal() == orderColumn).findFirst().orElse(EDataTableSortBy.NAME),
+                orderDir.equalsIgnoreCase(ESortType.ASC.toString())), HttpStatus.OK);
     }
 
 }
