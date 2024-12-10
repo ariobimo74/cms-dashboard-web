@@ -24,7 +24,27 @@ $(document).ready(function () {
             { data: 'roleDto.roleName' },
             { data: 'mobilePhoneNumber' },
             { data: 'email' },
-            { data: 'memberLevel' }
+            { data: 'memberLevel' },
+            {
+                data: 'id', 
+                render: function (data, type, row) {
+                    return `
+                        <button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button>
+                        <button class="btn btn-warning edit-btn" title="Edit Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf044</i></button>
+                        <button class="btn btn-danger delete-btn" title="Delete Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf1f8</i></button>
+                    `;
+                },
+                orderable: false, 
+                searchable: false
+            }
         ]
-    });
-});
+    })
+
+    $('#user-dataTables').on('click', '.detail-btn', function () {
+        window.location.href = "/profile/" + $(this).data('id')
+    })
+
+    $('#user-dataTables').on('click', '.edit-btn', function () {
+        window.location.href = "/edit/" + $(this).data('id')
+    })
+})
