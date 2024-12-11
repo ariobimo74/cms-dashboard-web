@@ -74,5 +74,6 @@ password : tester
 
 ## Bugs and Issues
 <p>
+
 Bugs and Issues are open to be discussed on [Issues](https://github.com/ariobimo74/cms-dashboard-web/issues).
 </p>
