@@ -1,6 +1,9 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.controller;
 
+import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserScope;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,13 +11,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @Controller
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonController {
+
+    private final UserScope userScope;
 
     @GetMapping("/login")
     public String loginPage() {
-        return "login/login";
+        if (Objects.isNull(userScope) || Objects.isNull(userScope.getUser())
+                || Objects.isNull(userScope.getUser().getUsername()))
+            return "login/login";
+        else return "dashboard";
     }
 
     @GetMapping("/register")

@@ -9,6 +9,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.Role;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserProfileScope;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EDataTableSortBy;
@@ -37,7 +38,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -51,6 +51,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileDtoMapper userProfileDtoMapper;
     private final RoleMapper roleMapper;
+
+    private final UserProfileScope userProfileScope;
 
     @Override
     public AddUserProfileDto addUserProfile(AddUserProfileDto userProfileDto) {
@@ -79,15 +81,21 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfileDetailDto findUserById(Long userProfileId) {
-        return userProfileDtoMapper.convertUserProfileDetailDto(userProfileDao.findById(userProfileId)
+        userProfileScope.setUserProfile(userProfileDao.findById(userProfileId)
                 .orElseThrow(() -> new DataNotFoundException(
-                IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND)
-        ));
+                        IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND)
+                ));
+        return userProfileDtoMapper.convertUserProfileDetailDto(userProfileScope.getUserProfile());
     }
 
     @Override
     public UserProfileDetailDto updateUserProfile(Authentication authentication, EditUserProfileDto editUserProfileDto) {
-        UserProfile userProfile = userProfileDao.findById(editUserProfileDto.getId()).orElseThrow(
+        UserProfile userProfile;
+
+        if (Objects.nonNull(userProfileScope) && Objects.nonNull(userProfileScope.getUserProfile())
+                && Objects.nonNull(userProfileScope.getUserProfile().getId()))
+            userProfile = userProfileScope.getUserProfile();
+        else userProfile = userProfileDao.findById(editUserProfileDto.getId()).orElseThrow(
                 () -> new DataNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_NOT_FOUND)
         );
 
