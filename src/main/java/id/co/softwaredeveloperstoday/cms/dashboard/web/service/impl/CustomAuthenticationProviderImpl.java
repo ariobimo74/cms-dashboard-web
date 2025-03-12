@@ -1,6 +1,7 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserScope;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,8 @@ public class CustomAuthenticationProviderImpl implements AuthenticationProvider 
 
     private final UserService userService;
 
+    private final UserScope userScope;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
@@ -41,6 +44,7 @@ public class CustomAuthenticationProviderImpl implements AuthenticationProvider 
             user.getUserRoles().forEach(
                     r -> authorities.add(new SimpleGrantedAuthority(r.getRole().getRoleName().name()))
             );
+            userScope.setUser(user);
             return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), authorities);
         }
         else throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER);

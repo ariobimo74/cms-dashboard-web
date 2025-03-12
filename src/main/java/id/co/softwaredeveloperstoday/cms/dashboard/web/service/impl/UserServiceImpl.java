@@ -5,6 +5,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserReplicaDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RequestChangePasswordDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserReplica;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserScope;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final UserReplicaDao userReplicaDao;
 
+    private final UserScope userScope;
+
     @Override
     public User findUserByUserName(String username) {
         return userDao.findByUsername(username);
@@ -47,10 +50,14 @@ public class UserServiceImpl implements UserService {
                 && authentication.getAuthorities().stream().noneMatch(a -> a.toString().equals(ERoleName.SUPER_ADMIN.toString())))
             throw new UserNotAllowedException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_NOT_ALLOWED);
 
-        if (StringUtils.isBlank(changePasswordDto.getUsername()))
-            changePasswordDto.setUsername(authentication.getName());
-
-        User user = userDao.findByUsername(changePasswordDto.getUsername());
+        User user;
+        if (StringUtils.isNotBlank(changePasswordDto.getUsername()))
+            user = userDao.findByUsername(changePasswordDto.getUsername());
+        else if (StringUtils.isBlank(changePasswordDto.getUsername()) && Objects.nonNull(userScope)
+                && Objects.nonNull(userScope.getUser()) && Objects.nonNull(userScope.getUser().getUsername())
+                && Objects.equals(userScope.getUser().getUsername(), authentication.getName()))
+            user = userScope.getUser();
+        else user = userDao.findByUsername(authentication.getName());
 
         if (Objects.isNull(user))
             throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_FOUND_USERNAME);
