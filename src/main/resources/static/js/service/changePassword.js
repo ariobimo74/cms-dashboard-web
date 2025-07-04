@@ -56,6 +56,7 @@ $(document).ready(function(){
         }, "warning")
     })
 
+    const token = getCsrfTokenCookie()
     function executeChangePassword() {
         let requestBodyChangePassword = {
             username: $('#username').val(),
@@ -70,6 +71,9 @@ $(document).ready(function(){
             type: 'post',
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
+            headers: {
+                'X-XSRF-TOKEN': token
+            },
             success: function(result) {
                 baseResponse = result
 

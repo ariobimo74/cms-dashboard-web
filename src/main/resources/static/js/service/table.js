@@ -74,11 +74,16 @@ $(document).ready(function () {
         }, "warning")
     })
 
+    const token = getCsrfTokenCookie()
+
     async function deleteUser(profileId) {
         $.ajax({
             url: '/api/v1/user/profile/' + profileId,
             type: 'delete',
             contentType: 'application/json; charset=utf-8',
+            headers: {
+                'X-XSRF-TOKEN': token
+            },
             success: function(result) {
                 baseResponse = result    
                 if (baseResponse.responseData.responseCode == 200) {
