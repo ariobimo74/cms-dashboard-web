@@ -1,5 +1,8 @@
 $(document).ready(function () {
-    let number = 1;
+    var currentRoles = []
+    var allowedUserToChangePassword = []
+    roleToDoSpecificAction()
+
     const dataTable = $('#user-dataTables').DataTable({
         responsive: true,
         processing: true,
@@ -36,11 +39,14 @@ $(document).ready(function () {
             {
                 data: 'id', 
                 render: function (data, type, row) {
-                    return `
-                        <button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button>
-                        <button class="btn btn-warning edit-btn" title="Edit Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf044</i></button>
-                        <button class="btn btn-danger delete-btn" title="Delete Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf1f8</i></button>
-                    `;
+                    if (currentRoles.length > 0 && allowedUserToChangePassword.length > 0 
+                        && currentRoles.some(data => allowedUserToChangePassword.includes(data))) 
+                        return `
+                            <button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button>
+                            <button class="btn btn-warning edit-btn" title="Edit Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf044</i></button>
+                            <button class="btn btn-danger delete-btn" title="Delete Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf1f8</i></button>
+                        `
+                    else return `<center><button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button></center>`
                 },
                 orderable: false, 
                 searchable: false
@@ -102,6 +108,28 @@ $(document).ready(function () {
                 if (parseInt(jqXHR.status) == parseInt(404)) window.location.href = "/error/404"
                 swal(baseResponse.responseData.acknowledge, baseResponse.responseData.responseMessage, "error")
             }
+        })
+    }
+
+    async function roleToDoSpecificAction() {
+        await $.ajax({
+            url: '/api/v1/user/current-role',
+                type: 'get',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function(result) {
+                    currentRoles = result.data
+                }
+        })
+
+        await $.ajax({
+            url: '/api/v1/user/allowed-user-to-create-edit-user',
+                type: 'get',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function(result) {
+                    allowedUserToChangePassword = result.data
+                }
         })
     }
 })

@@ -39,6 +39,7 @@ public interface IApplicationConstant {
             String CHANGE_PASSWORD = "/change-password";
             String CURRENT_ROLE = "/current-role";
             String CHANGE_PASSWORD_ALLOWED_USER = "/allowed-user-to-change-password";
+            String CREATE_EDIT_ACTION_ALLOWED_USER = "/allowed-user-to-create-edit-user";
         }
     }
 
