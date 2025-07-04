@@ -115,6 +115,11 @@ public class UserEndpoint {
         return ResultBuilderUtil.ok(List.of(ERoleName.SUPER_ADMIN));
     }
 
+    @GetMapping(IApplicationConstant.RestVersion.User.CREATE_EDIT_ACTION_ALLOWED_USER)
+    public ResponseEntity<ResultListDto<ERoleName>> getAllowedUserToCreateEditAction(Authentication authentication) {
+        return ResultBuilderUtil.ok(List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN));
+    }
+
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE

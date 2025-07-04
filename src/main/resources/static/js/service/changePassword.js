@@ -5,7 +5,6 @@ $(document).ready(function(){
     roleToChangePassword()
 
     async function roleToChangePassword() {
-        console.log("determine roles")
         await $.ajax({
             url: '/api/v1/user/current-role',
                 type: 'get',
