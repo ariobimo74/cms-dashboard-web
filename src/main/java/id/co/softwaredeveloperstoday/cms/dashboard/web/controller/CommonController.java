@@ -42,12 +42,20 @@ public class CommonController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Cookie cookie = new Cookie("JSESSIONID", null);
+        Cookie sessionCookie = new Cookie("JSESSIONID", null);
+        Cookie rememberMeCookie = new Cookie("remember-me", null);
+
         String cookiePath = StringUtils.hasText(request.getContextPath()) ? request.getContextPath() : "/";
-        cookie.setPath(cookiePath);
-        cookie.setMaxAge(0);
-        cookie.setSecure(request.isSecure());
-        response.addCookie(cookie);
+
+        sessionCookie.setPath(cookiePath);
+        sessionCookie.setMaxAge(0);
+        sessionCookie.setSecure(request.isSecure());
+        rememberMeCookie.setPath(cookiePath);
+        rememberMeCookie.setMaxAge(0);
+        rememberMeCookie.setSecure(request.isSecure());
+
+        response.addCookie(sessionCookie);
+        response.addCookie(rememberMeCookie);
 
         return "login/login";
     }
