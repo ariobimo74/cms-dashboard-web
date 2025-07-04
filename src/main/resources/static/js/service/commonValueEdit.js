@@ -79,12 +79,16 @@ async function getRecommendedUsername() {
             mobilePhoneNumber: $('#phoneNumber').val()
         }
 
+        const token = getCsrfTokenCookie()
         await $.ajax({
             url: '/api/v1/value/recommended-username',
             type: 'patch',
             data: JSON.stringify(requestBodyToRecommendedUsername),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
+            headers: {
+                'X-XSRF-TOKEN': token
+            },
             success: function(result) {
                 recommendedUsername = result.data
             }

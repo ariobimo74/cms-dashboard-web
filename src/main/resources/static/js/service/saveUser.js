@@ -1,10 +1,15 @@
 async function executeSaveUser(method, url, jsonData, clearInput) {
+    const token = getCsrfTokenCookie()
+
     await $.ajax({
         url: url,
         type: method,
         data: JSON.stringify(jsonData),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
+        headers: {
+            'X-XSRF-TOKEN': token
+        },
         success: function(result) {
             baseResponse = result
 
