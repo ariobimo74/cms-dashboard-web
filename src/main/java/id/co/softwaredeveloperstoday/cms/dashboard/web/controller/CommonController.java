@@ -80,4 +80,9 @@ public class CommonController {
         return "user/table";
     }
 
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
+
 }

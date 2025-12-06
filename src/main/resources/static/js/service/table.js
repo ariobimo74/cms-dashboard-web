@@ -46,7 +46,10 @@ $(document).ready(function () {
                             <button class="btn btn-warning edit-btn" title="Edit Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf044</i></button>
                             <button class="btn btn-danger delete-btn" title="Delete Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf1f8</i></button>
                         `
-                    else return `<center><button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button></center>`
+                    else {
+                        $('#register-btn').hide()
+                        return `<center><button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button></center>`
+                    }
                 },
                 orderable: false, 
                 searchable: false
