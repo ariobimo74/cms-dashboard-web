@@ -9,9 +9,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseMenuDto {
+public class MenuDto {
 
-    private String greetingName;
-    private List<MenuDto> menus;
+    private String menuName;
+    private String iconClass;
+    private String url;
+    private List<MenuDto> subMenu;
+    private int orderNumber;
 
 }
