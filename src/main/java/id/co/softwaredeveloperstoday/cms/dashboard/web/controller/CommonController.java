@@ -1,9 +1,12 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.controller;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserScope;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.service.AuthorizeRoleService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.UserNotAllowedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,8 @@ public class CommonController {
 
     private final UserScope userScope;
 
+    private final AuthorizeRoleService authorizeRoleService;
+
     @GetMapping("/login")
     public String loginPage() {
         if (Objects.isNull(userScope) || Objects.isNull(userScope.getUser())
@@ -28,8 +33,13 @@ public class CommonController {
     }
 
     @GetMapping("/register")
-    public String registerPage() {
-        return "login/register";
+    public String registerPage(Authentication authentication) {
+        try {
+            authorizeRoleService.authorizeSuperAdmin(authentication);
+            return "login/register";
+        } catch (UserNotAllowedException e) {
+            return "error/404";
+        }
     }
 
     @GetMapping("/dashboard")
@@ -66,18 +76,28 @@ public class CommonController {
     }
 
     @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILE)
-    public String viewUserProfile() {
+    public String viewUserProfile(Authentication authentication) {
         return "user/detail";
     }
 
     @GetMapping(IApplicationConstant.RestVersion.User.EDIT_USER_PROFILE)
-    public String editUserProfile() {
-        return "user/edit";
+    public String editUserProfile(Authentication authentication) {
+        try {
+            authorizeRoleService.authorizeSuperAdmin(authentication);
+            return "user/edit";
+        } catch (UserNotAllowedException e) {
+            return "error/404";
+        }
     }
 
     @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILES)
-    public String viewUserProfiles() {
-        return "user/table";
+    public String viewUserProfiles(Authentication authentication) {
+        try {
+            authorizeRoleService.authorizeRegularAdmin(authentication);
+            return "user/table";
+        } catch (UserNotAllowedException e) {
+            return "error/404";
+        }
     }
 
     @GetMapping("/about")
