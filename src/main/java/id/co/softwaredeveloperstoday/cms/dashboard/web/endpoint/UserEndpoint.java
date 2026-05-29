@@ -47,6 +47,7 @@ public class UserEndpoint {
 
     @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILES)
     public ResponseEntity<ResultPageDto<UserProfileDetailDto>> getUserProfiles(
+            Authentication authentication,
             @RequestParam(
                     value = IApplicationConstant.CommonValue.CommonRestParam.PAGE,
                     required = false, defaultValue = "1") Integer page,
@@ -72,19 +73,19 @@ public class UserEndpoint {
                     required = false, defaultValue = "ASC") ESortType sortType
             ) {
         try {
-            return ResultBuilderUtil.ok(userProfileService.getAllPaging(searchName, searchUserName, searchDate, page, size, sortBy, Objects.equals(sortType, ESortType.ASC)));
-        } catch (DataNotFoundException e) {
+            return ResultBuilderUtil.ok(userProfileService.getAllPaging(authentication, searchName, searchUserName, searchDate, page, size, sortBy, Objects.equals(sortType, ESortType.ASC)));
+        } catch (UserNotAllowedException | DataNotFoundException e) {
             return ResultBuilderUtil.noPageContent();
         }
     }
 
     @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILE)
     public ResponseEntity<ResultDto<UserProfileDetailDto>> getUserProfile(
-            @PathVariable(IApplicationConstant.CommonValue.CommonRestPath.ID) Long id
+            Authentication authentication, @PathVariable(IApplicationConstant.CommonValue.CommonRestPath.ID) Long id
     ) {
         try {
-            return ResultBuilderUtil.ok(userProfileService.findUserById(id));
-        } catch (DataNotFoundException e) {
+            return ResultBuilderUtil.ok(userProfileService.findUserById(authentication, id));
+        } catch (DataNotFoundException | UserNotAllowedException e) {
             return ResultBuilderUtil.notFound(e.getMessage());
         }
     }
@@ -117,7 +118,7 @@ public class UserEndpoint {
 
     @GetMapping(IApplicationConstant.RestVersion.User.CREATE_EDIT_ACTION_ALLOWED_USER)
     public ResponseEntity<ResultListDto<ERoleName>> getAllowedUserToCreateEditAction(Authentication authentication) {
-        return ResultBuilderUtil.ok(List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN));
+        return ResultBuilderUtil.ok(List.of(ERoleName.SUPER_ADMIN));
     }
 
     @PutMapping(
@@ -139,6 +140,7 @@ public class UserEndpoint {
 
     @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILES_DATA_TABLE)
     public ResponseEntity<ResponseDataTableDto<UserProfileDetailDto>> getUserProfilesDataTable(
+            Authentication authentication,
             @RequestParam int draw,
             @RequestParam int start,
             @RequestParam int length,
@@ -146,19 +148,23 @@ public class UserEndpoint {
             @RequestParam(required = false, value = "order[0][column]") int orderColumn,
             @RequestParam(required = false, value = "order[0][dir]") String orderDir
     ) {
-        return new ResponseEntity<>(userProfileService.getAllPagingDataTable(draw, search, (start / length) + 1, length,
-                Stream.of(EDataTableSortBy.values()).filter(s -> s.ordinal() == orderColumn-1).findFirst().orElse(EDataTableSortBy.NAME),
-                orderDir.equalsIgnoreCase(ESortType.ASC.toString())), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(userProfileService.getAllPagingDataTable(authentication, draw, search, (start / length) + 1, length,
+                    Stream.of(EDataTableSortBy.values()).filter(s -> s.ordinal() == orderColumn - 1).findFirst().orElse(EDataTableSortBy.NAME),
+                    orderDir.equalsIgnoreCase(ESortType.ASC.toString())), HttpStatus.OK);
+        } catch (UserNotAllowedException | DataNotFoundException e) {
+            return null;
+        }
     }
 
     @DeleteMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILE)
     public ResponseEntity<ResultDto<EditUserProfileDto>> deleteUser(
-            @PathVariable(value = IApplicationConstant.CommonValue.CommonRestPath.ID) Long id
+            Authentication authentication, @PathVariable(value = IApplicationConstant.CommonValue.CommonRestPath.ID) Long id
     ) {
         try {
-            return ResultBuilderUtil.ok(userProfileService.deleteUserByEditingIsDelete(id));
-        } catch (DataNotFoundException e) {
-            return ResultBuilderUtil.notFound(e.getMessage());
+            return ResultBuilderUtil.ok(userProfileService.deleteUserByEditingIsDelete(authentication, id));
+        } catch (UserNotAllowedException | DataNotFoundException e) {
+            return ResultBuilderUtil.badRequest(e.getMessage());
         }
     }
 

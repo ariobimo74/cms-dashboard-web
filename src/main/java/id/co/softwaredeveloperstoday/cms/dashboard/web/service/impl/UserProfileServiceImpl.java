@@ -1,6 +1,7 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.RoleDao;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserProfileDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.*;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.RoleMapper;
@@ -10,12 +11,14 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserProfileScope;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.service.AuthorizeRoleService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EDataTableSortBy;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EUserSortBy;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.DataNotFoundException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +46,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserProfileServiceImpl implements UserProfileService {
+    private final UserDao userDao;
 
     private final PasswordEncoder encoder;
 
@@ -54,8 +58,12 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileScope userProfileScope;
 
+    private final AuthorizeRoleService authorizeRoleService;
+
     @Override
-    public AddUserProfileDto addUserProfile(AddUserProfileDto userProfileDto) {
+    public AddUserProfileDto addUserProfile(Authentication authentication, AddUserProfileDto userProfileDto) {
+        authorizeRoleService.authorizeSuperAdmin(authentication);
+
         if (!Objects.equals(userProfileDto.getPassword(), userProfileDto.getConfirmPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_NEW_PASSWORD_NOT_MATCH);
 
@@ -80,16 +88,21 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfileDetailDto findUserById(Long userProfileId) {
-        userProfileScope.setUserProfile(userProfileDao.findById(userProfileId)
-                .orElseThrow(() -> new DataNotFoundException(
-                        IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND)
-                ));
+    public UserProfileDetailDto findUserById(Authentication authentication, Long userProfileId) {
+        User user = userDao.findByUsername(authentication.getName());
+        UserProfile userProfile = userProfileDao.findById(userProfileId).orElseThrow(() -> new DataNotFoundException(
+                IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND)
+        );
+        if (!Objects.equals(user.getId(), userProfile.getUser().getId()))
+            authorizeRoleService.authorizeRegularAdmin(authentication);
+
+        userProfileScope.setUserProfile(userProfile);
         return userProfileDtoMapper.convertUserProfileDetailDto(userProfileScope.getUserProfile());
     }
 
     @Override
     public UserProfileDetailDto updateUserProfile(Authentication authentication, EditUserProfileDto editUserProfileDto) {
+        authorizeRoleService.authorizeSuperAdmin(authentication);
         UserProfile userProfile;
 
         if (Objects.nonNull(userProfileScope) && Objects.nonNull(userProfileScope.getUserProfile())
@@ -130,8 +143,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public Page<UserProfileDetailDto> getAllPaging(
-            String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort
+            Authentication authentication, String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort
     ) {
+        authorizeRoleService.authorizeRegularAdmin(authentication);
         Date searchDateFormatted = null;
         if (Objects.nonNull(searchDate)) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -154,7 +168,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort) {
+    public ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(Authentication authentication, int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort) {
+        authorizeRoleService.authorizeRegularAdmin(authentication);
         Page<UserProfile> userProfiles;
         if (StringUtils.isBlank(search))
             userProfiles = userProfileDao.findAll(pageable(page, size, dataTableSortBy.getName(), isAscendingSort));
@@ -170,7 +185,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public EditUserProfileDto deleteUserByEditingIsDelete(Long id) {
+    public EditUserProfileDto deleteUserByEditingIsDelete(Authentication authentication, Long id) {
+        authorizeRoleService.authorizeSuperAdmin(authentication);
         UserProfile userProfile = userProfileDao.findById(id).orElseThrow(
                 () -> new DataNotFoundException(
                         IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND

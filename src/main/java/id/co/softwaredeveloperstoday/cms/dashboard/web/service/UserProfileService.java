@@ -10,16 +10,16 @@ import java.util.Date;
 
 public interface UserProfileService {
 
-    AddUserProfileDto addUserProfile(AddUserProfileDto userProfileDto);
+    AddUserProfileDto addUserProfile(Authentication authentication, AddUserProfileDto userProfileDto);
 
-    UserProfileDetailDto findUserById(Long userProfileId);
+    UserProfileDetailDto findUserById(Authentication authentication, Long userProfileId);
 
     UserProfileDetailDto updateUserProfile(Authentication authentication, EditUserProfileDto editUserProfileDto);
 
-    Page<UserProfileDetailDto> getAllPaging(String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort);
+    Page<UserProfileDetailDto> getAllPaging(Authentication authentication, String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort);
 
-    ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort);
+    ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(Authentication authentication, int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort);
 
-    EditUserProfileDto deleteUserByEditingIsDelete(Long id);
+    EditUserProfileDto deleteUserByEditingIsDelete(Authentication authentication, Long id);
 
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,10 +34,11 @@ public class RegisterEndpoint {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ResultDto<AddUserProfileDto>> registerUser(
+            Authentication authentication,
             @RequestBody @Valid AddUserProfileDto userProfileDto
     ) {
         try {
-            return ResultBuilderUtil.ok(userProfileService.addUserProfile(userProfileDto));
+            return ResultBuilderUtil.ok(userProfileService.addUserProfile(authentication, userProfileDto));
         } catch (PasswordNotMatchException e) {
             return ResultBuilderUtil.badRequest(null, e.getMessage());
         } catch (Exception e) {

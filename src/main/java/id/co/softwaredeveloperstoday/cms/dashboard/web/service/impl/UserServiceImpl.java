@@ -3,11 +3,14 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserReplicaDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.RequestChangePasswordDto;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.factory.AuthorizationRoleLevelFactory;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserReplica;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserScope;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.service.AuthorizationRoleLevelService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleLevel;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.UserNotAllowedException;
@@ -34,6 +37,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserScope userScope;
 
+    private final AuthorizationRoleLevelFactory roleLevelFactory;
+
     @Override
     public User findUserByUserName(String username) {
         return userDao.findByUsername(username);
@@ -46,8 +51,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changePassword(Authentication authentication, RequestChangePasswordDto changePasswordDto) {
+        AuthorizationRoleLevelService roleLevelService = roleLevelFactory.determineService(ERoleLevel.SUPER_ADMIN);
         if (StringUtils.isNotBlank(changePasswordDto.getUsername())
-                && authentication.getAuthorities().stream().noneMatch(a -> a.toString().equals(ERoleName.SUPER_ADMIN.toString())))
+                && !roleLevelService.isAuthorized(authentication))
             throw new UserNotAllowedException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_NOT_ALLOWED);
 
         User user;

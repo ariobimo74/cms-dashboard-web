@@ -57,7 +57,7 @@ async function generateContentForForm() {
 
                         <div class="form-group">
                             <p class="text-left">Username</p>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Username to be used to login to dashboard" readonly>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Username to be used to login to dashboard" readonly required>
                         </div>
 
                         <div class="form-group" id="recommendedUsername" style="display: none">
