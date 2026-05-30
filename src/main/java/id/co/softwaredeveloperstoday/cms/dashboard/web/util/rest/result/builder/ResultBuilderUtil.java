@@ -1,5 +1,6 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.builder;
 
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultListDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultPageDto;
@@ -61,9 +62,17 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
     public static <T> ResponseEntity<ResultDto<T>> notFound(T data, String errorMessage) {
         ResultDtoImpl<T> resultDto = new ResultDtoImpl<>();
         resultDto.setData(data);
-        resultDto.setResponseData(responseDataBadRequest(errorMessage));
+        resultDto.setResponseData(responseDataNotFound(errorMessage));
 
         return new ResponseEntity<>(resultDto, HttpStatus.NOT_FOUND);
+    }
+
+    public static <T> ResponseEntity<ResultDto<T>> unauthorized() {
+        ResultDtoImpl<T> resultDto = new ResultDtoImpl<>();
+        resultDto.setData(null);
+        resultDto.setResponseData(responseDataUnauthorized(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_UNAUTHORIZED));
+
+        return new ResponseEntity<>(resultDto, HttpStatus.UNAUTHORIZED);
     }
 
     public static <T> ResponseEntity<ResultDto<T>> internalServerError(String errorMessage) {
@@ -81,7 +90,7 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
     public static <T> ResponseEntity<ResultDto<T>> notFound(String errorMessage) {
         ResultDtoImpl<String> resultDto = new ResultDtoImpl<>();
         resultDto.setData(errorMessage);
-        resultDto.setResponseData(responseDataBadRequest(errorMessage));
+        resultDto.setResponseData(responseDataNotFound(errorMessage));
 
         return notFound(null, errorMessage);
     }
@@ -100,6 +109,14 @@ public class ResultBuilderUtil extends BaseResponseDataBuilder {
         resultListDto.setResponseData(responseDataOk());
 
         return new ResponseEntity<>(resultListDto, HttpStatus.NO_CONTENT);
+    }
+
+    public static <T> ResponseEntity<ResultPageDto<T>> unauthorizedPage() {
+        ResultPageDtoImpl<T> resultListDto = new ResultPageDtoImpl<>();
+        resultListDto.setData(Collections.emptyList());
+        resultListDto.setResponseData(responseDataUnauthorized(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_UNAUTHORIZED));
+
+        return new ResponseEntity<>(resultListDto, HttpStatus.UNAUTHORIZED);
     }
 
 }

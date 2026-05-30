@@ -89,11 +89,10 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfileDetailDto findUserById(Authentication authentication, Long userProfileId) {
-        User user = userDao.findByUsername(authentication.getName());
         UserProfile userProfile = userProfileDao.findById(userProfileId).orElseThrow(() -> new DataNotFoundException(
                 IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_DATA_NOT_FOUND)
         );
-        if (!Objects.equals(user.getId(), userProfile.getUser().getId()))
+        if (!Objects.equals(userProfile.getUser().getUsername(), authentication.getName()))
             authorizeRoleService.authorizeRegularAdmin(authentication);
 
         userProfileScope.setUserProfile(userProfile);

@@ -4,6 +4,7 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.AddUserProfileDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.UserNotAllowedException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.ResultDto;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.rest.result.builder.ResultBuilderUtil;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,8 @@ public class RegisterEndpoint {
             return ResultBuilderUtil.ok(userProfileService.addUserProfile(authentication, userProfileDto));
         } catch (PasswordNotMatchException e) {
             return ResultBuilderUtil.badRequest(null, e.getMessage());
+        } catch (UserNotAllowedException e) {
+            return ResultBuilderUtil.unauthorized();
         } catch (Exception e) {
             return ResultBuilderUtil.internalServerError(e.getMessage());
         }

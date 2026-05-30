@@ -61,6 +61,8 @@ public interface IApplicationConstant {
             String ERROR_MESSAGE_DATA_NOT_FOUND = "No Data found";
 
             String ERROR_MESSAGE_GENERAL_REQUIRED_FIELDS = " Required Parameter(s) should Be Filled: There is/are field(s)/parameter(s) that is/are empty/blank. Please insert Required Field(s) ";
+
+            String ERROR_MESSAGE_UNAUTHORIZED = "Unauthorized";
         }
     }
 
