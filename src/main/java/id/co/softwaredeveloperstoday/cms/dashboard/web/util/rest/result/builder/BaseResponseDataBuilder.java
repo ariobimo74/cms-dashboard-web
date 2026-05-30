@@ -30,4 +30,16 @@ public class BaseResponseDataBuilder {
         );
     }
 
+    static ResponseDataDto responseDataNotFound(String message) {
+        return new ResponseDataDto(
+                IApplicationConstant.CommonValue.RestResponseValue.FAILED, HttpStatus.NOT_FOUND.value(), message
+        );
+    }
+
+    static ResponseDataDto responseDataUnauthorized(String message) {
+        return new ResponseDataDto(
+                IApplicationConstant.CommonValue.RestResponseValue.FAILED, HttpStatus.UNAUTHORIZED.value(), message
+        );
+    }
+
 }

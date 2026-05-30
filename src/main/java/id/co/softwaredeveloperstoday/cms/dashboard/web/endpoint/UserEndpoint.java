@@ -74,8 +74,10 @@ public class UserEndpoint {
             ) {
         try {
             return ResultBuilderUtil.ok(userProfileService.getAllPaging(authentication, searchName, searchUserName, searchDate, page, size, sortBy, Objects.equals(sortType, ESortType.ASC)));
-        } catch (UserNotAllowedException | DataNotFoundException e) {
+        } catch (DataNotFoundException e) {
             return ResultBuilderUtil.noPageContent();
+        } catch (UserNotAllowedException e) {
+            return ResultBuilderUtil.unauthorizedPage();
         }
     }
 
@@ -85,8 +87,10 @@ public class UserEndpoint {
     ) {
         try {
             return ResultBuilderUtil.ok(userProfileService.findUserById(authentication, id));
-        } catch (DataNotFoundException | UserNotAllowedException e) {
+        } catch (DataNotFoundException e) {
             return ResultBuilderUtil.notFound(e.getMessage());
+        } catch (UserNotAllowedException e) {
+            return ResultBuilderUtil.unauthorized();
         }
     }
 
@@ -96,10 +100,12 @@ public class UserEndpoint {
     ) {
         try {
             return ResultBuilderUtil.ok(userService.changePassword(authentication, changePasswordDto));
-        } catch (UsernameNotFoundException | UserNotAllowedException | PasswordNotMatchException e) {
+        } catch (UsernameNotFoundException | PasswordNotMatchException e) {
             return ResultBuilderUtil.badRequest(
                     IApplicationConstant.CommonValue.RestResponseValue.FAILED, e.getMessage()
             );
+        } catch (UserNotAllowedException e) {
+            return ResultBuilderUtil.unauthorized();
         } catch (Exception e) {
             e.printStackTrace();
             return ResultBuilderUtil.internalServerError(e.getMessage());
@@ -152,7 +158,7 @@ public class UserEndpoint {
             return new ResponseEntity<>(userProfileService.getAllPagingDataTable(authentication, draw, search, (start / length) + 1, length,
                     Stream.of(EDataTableSortBy.values()).filter(s -> s.ordinal() == orderColumn - 1).findFirst().orElse(EDataTableSortBy.NAME),
                     orderDir.equalsIgnoreCase(ESortType.ASC.toString())), HttpStatus.OK);
-        } catch (UserNotAllowedException | DataNotFoundException e) {
+        } catch (DataNotFoundException | UserNotAllowedException e) {
             return null;
         }
     }
@@ -163,8 +169,10 @@ public class UserEndpoint {
     ) {
         try {
             return ResultBuilderUtil.ok(userProfileService.deleteUserByEditingIsDelete(authentication, id));
-        } catch (UserNotAllowedException | DataNotFoundException e) {
+        } catch (DataNotFoundException e) {
             return ResultBuilderUtil.badRequest(e.getMessage());
+        } catch (UserNotAllowedException e) {
+            return ResultBuilderUtil.unauthorized();
         }
     }
 
