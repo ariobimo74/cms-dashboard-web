@@ -6,8 +6,6 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EUserSor
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 
-import java.util.Date;
-
 public interface UserProfileService {
 
     AddUserProfileDto addUserProfile(Authentication authentication, AddUserProfileDto userProfileDto);
@@ -18,7 +16,7 @@ public interface UserProfileService {
 
     Page<UserProfileDetailDto> getAllPaging(Authentication authentication, String searchName, String searchUsername, String searchDate, Integer page, Integer size, EUserSortBy sortBy, boolean isAscendingSort);
 
-    ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(Authentication authentication, int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort);
+    ResponseDataTableDto<UserProfileDataTableDto> getAllPagingDataTable(Authentication authentication, int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort);
 
     EditUserProfileDto deleteUserByEditingIsDelete(Authentication authentication, Long id);
 
