@@ -145,7 +145,7 @@ public class UserEndpoint {
     }
 
     @GetMapping(IApplicationConstant.RestVersion.User.VIEW_USER_PROFILES_DATA_TABLE)
-    public ResponseEntity<ResponseDataTableDto<UserProfileDetailDto>> getUserProfilesDataTable(
+    public ResponseEntity<ResponseDataTableDto<UserProfileDataTableDto>> getUserProfilesDataTable(
             Authentication authentication,
             @RequestParam int draw,
             @RequestParam int start,

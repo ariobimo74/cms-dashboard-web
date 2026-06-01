@@ -27,15 +27,9 @@ $(document).ready(function () {
                 orderable: false
             },
             { data: 'name' },
-            { data: 'idCardNumber' },
-            { data: 'dateOfBirth' },
-            { data: 'placeOfBirth' },
-            { data: 'gender' },
             { data: 'username' },
             { data: 'roleDto.roleName' },
-            { data: 'mobilePhoneNumber' },
             { data: 'email' },
-            { data: 'memberLevel' },
             {
                 data: 'id', 
                 render: function (data, type, row) {

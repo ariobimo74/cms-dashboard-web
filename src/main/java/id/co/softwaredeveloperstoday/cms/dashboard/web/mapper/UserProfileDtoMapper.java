@@ -30,6 +30,10 @@ public abstract class UserProfileDtoMapper {
 
     @Mapping(target = "username", source = "user.username")
     @Mapping(target = "roleDto", expression = "java(determineOneUserRole(userProfile.getUser().getUserRoles()))")
+    public abstract UserProfileDataTableDto convertUserProfileDataTableDto(UserProfile userProfile);
+
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "roleDto", expression = "java(determineOneUserRole(userProfile.getUser().getUserRoles()))")
     public abstract EditUserProfileDto convertEditUserProfileDto(UserProfile userProfile);
 
     String splitName(String fullName, int index) {

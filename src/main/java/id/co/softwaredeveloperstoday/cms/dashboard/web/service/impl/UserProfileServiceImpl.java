@@ -167,7 +167,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public ResponseDataTableDto<UserProfileDetailDto> getAllPagingDataTable(Authentication authentication, int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort) {
+    public ResponseDataTableDto<UserProfileDataTableDto> getAllPagingDataTable(Authentication authentication, int draw, String search, Integer page, Integer size, EDataTableSortBy dataTableSortBy, boolean isAscendingSort) {
         authorizeRoleService.authorizeRegularAdmin(authentication);
         Page<UserProfile> userProfiles;
         if (StringUtils.isBlank(search))
@@ -179,7 +179,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (userProfiles.getTotalElements() == 0)
             return new ResponseDataTableDto<>(draw, 0, 0, new ArrayList<>());
         else return new ResponseDataTableDto<>(draw, userProfileDao.count(), userProfiles.getTotalElements(),
-                userProfiles.getContent().stream().map(userProfileDtoMapper::convertUserProfileDetailDto).collect(Collectors.toList())
+                userProfiles.getContent().stream().map(userProfileDtoMapper::convertUserProfileDataTableDto).collect(Collectors.toList())
         );
     }
 

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum EDataTableSortBy {
-    NAME("name"), ID_CARD_NUMBER("idCardNumber"), DATE_OF_BIRTH("dateOfBirth"), PLACE_OF_BIRTH("placeOfBirth"), GENDER("gender"), USERNAME("user.username"), ROLE("user.userRoles.role.roleName"), MOBILE_PHONE_NUMBER("mobilePhoneNumber"), EMAIL("email"), MEMBER_LEVEL("memberLevel");
+    NAME("name"), USERNAME("user.username"), ROLE("user.userRoles.role.roleName"), EMAIL("email");
 
     private final String name;
 }
