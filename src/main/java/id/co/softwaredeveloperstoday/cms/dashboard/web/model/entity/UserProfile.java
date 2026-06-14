@@ -2,7 +2,6 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.CommonAudit;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.address.City;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EGenderType;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EMaritalStatus;
@@ -67,11 +66,6 @@ public class UserProfile extends CommonAudit {
 
     @Column(name = "district")
     private String district;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @NotFound(action = NotFoundAction.IGNORE)
-    @JoinColumn(name="city_id", referencedColumnName = "id")
-    private City city;
 
     @Column(name = "country")
     private String country = "Indonesia";
