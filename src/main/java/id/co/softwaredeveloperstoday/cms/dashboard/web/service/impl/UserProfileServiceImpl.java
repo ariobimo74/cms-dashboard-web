@@ -46,8 +46,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserProfileServiceImpl implements UserProfileService {
-    private final UserDao userDao;
-
     private final PasswordEncoder encoder;
 
     private final UserProfileDao userProfileDao;
