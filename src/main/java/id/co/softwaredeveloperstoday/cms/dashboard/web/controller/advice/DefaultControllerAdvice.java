@@ -21,6 +21,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Objects;
+
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class DefaultControllerAdvice extends ResponseEntityExceptionHandler {
@@ -65,6 +67,12 @@ public class DefaultControllerAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        if (!ex.getBindingResult().getAllErrors().isEmpty() && Objects.nonNull(ex.getBindingResult().getAllErrors().get(0))
+                && Objects.nonNull(ex.getBindingResult().getAllErrors().get(0).getCode())
+                && Objects.requireNonNull(ex.getBindingResult().getAllErrors().get(0).getCode()).contains(IApplicationConstant.CommonValue.CommonRestParam.PARAM_STRONG_PASSWORD))
+            return new ResponseEntity<>(buildResponse(HttpStatus.BAD_REQUEST.value(), IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_STRONG_PASSWORD),
+                    HttpStatus.BAD_REQUEST);
+
         return new ResponseEntity<>(buildResponse(HttpStatus.BAD_REQUEST.value(), IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_GENERAL_REQUIRED_FIELDS),
                 HttpStatus.BAD_REQUEST);
     }

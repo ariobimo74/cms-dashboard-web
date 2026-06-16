@@ -11,7 +11,6 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.service.AuthorizationRole
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleLevel;
-import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleName;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.UserNotAllowedException;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +50,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changePassword(Authentication authentication, RequestChangePasswordDto changePasswordDto) {
-        AuthorizationRoleLevelService roleLevelService = roleLevelFactory.determineService(ERoleLevel.SUPER_ADMIN);
+        AuthorizationRoleLevelService regularAdminLevelService = roleLevelFactory.determineService(ERoleLevel.REGULAR_ADMIN);
+        AuthorizationRoleLevelService superAdminLevelService = roleLevelFactory.determineService(ERoleLevel.SUPER_ADMIN);
+
         if (StringUtils.isNotBlank(changePasswordDto.getUsername())
-                && !roleLevelService.isAuthorized(authentication))
+                && !regularAdminLevelService.isAuthorized(authentication))
             throw new UserNotAllowedException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_NOT_ALLOWED);
 
         User user;
@@ -68,10 +69,10 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(user))
             throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_FOUND_USERNAME);
 
-        if (!encoder.matches(changePasswordDto.getOldPassword(), user.getPassword()))
+        if (!superAdminLevelService.isAuthorized(authentication) && !encoder.matches(changePasswordDto.getOldPassword(), user.getPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_OLD_PASSWORD_NOT_MATCH);
-        else if (encoder.matches(changePasswordDto.getOldPassword(), user.getPassword())
-                && !Objects.equals(changePasswordDto.getNewPassword(), changePasswordDto.getConfirmNewPassword()))
+
+        if (!Objects.equals(changePasswordDto.getNewPassword(), changePasswordDto.getConfirmNewPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_NEW_PASSWORD_NOT_MATCH);
 
         String encodedOldPassword = encoder.encode(changePasswordDto.getNewPassword());

@@ -45,7 +45,6 @@ public interface IApplicationConstant {
 
     interface SchemaName {
         String MASTER_AUTHENTICATION = "master_authentication";
-        String MASTER_ADDRESS = "master_address";
     }
 
     interface CommonMessage {
@@ -63,6 +62,8 @@ public interface IApplicationConstant {
             String ERROR_MESSAGE_GENERAL_REQUIRED_FIELDS = " Required Parameter(s) should Be Filled: There is/are field(s)/parameter(s) that is/are empty/blank. Please insert Required Field(s) ";
 
             String ERROR_MESSAGE_UNAUTHORIZED = "Unauthorized";
+
+            String ERROR_MESSAGE_STRONG_PASSWORD = "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character";
         }
     }
 
@@ -83,6 +84,8 @@ public interface IApplicationConstant {
 
             String PAGE = "page";
             String SIZE = "size";
+
+            String PARAM_STRONG_PASSWORD = "StrongPassword";
         }
 
         interface CommonRestPath {

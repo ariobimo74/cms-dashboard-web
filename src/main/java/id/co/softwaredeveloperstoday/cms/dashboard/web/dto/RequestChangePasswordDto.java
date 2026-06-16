@@ -1,5 +1,6 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.dto;
 
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.validator.StrongPassword;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class RequestChangePasswordDto {
     @NotBlank
     @NotEmpty
     private String oldPassword;
+    @StrongPassword
     @NotNull
     @NotBlank
     @NotEmpty

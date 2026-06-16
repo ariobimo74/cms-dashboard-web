@@ -30,8 +30,11 @@ $(document).ready(function(){
 
     async function permissionForUsername() {
         if (currentRoles.length > 0 && allowedUserToChangePassword.length > 0 
-            && currentRoles.some(data => allowedUserToChangePassword.includes(data))) 
+            && currentRoles.some(data => allowedUserToChangePassword.includes(data))) {
             $('#userNameGroup').toggle()
+            $('#oldPassword').attr("type", "text")
+            $('#oldPassword').val("IGNORED_AS_SUPER_ADMIN")
+        }
     }
 
     $('#forgotPasswordForm').submit(function() {

@@ -1,5 +1,6 @@
 package id.co.softwaredeveloperstoday.cms.dashboard.web.dto;
 
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.validator.StrongPassword;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class AddUserProfileDto extends UserProfileDto {
 
+    @StrongPassword
     @NotNull
     @NotBlank
     @NotEmpty
