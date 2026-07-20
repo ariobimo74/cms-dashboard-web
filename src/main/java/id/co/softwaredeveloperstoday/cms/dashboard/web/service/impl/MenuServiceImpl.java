@@ -26,26 +26,26 @@ public class MenuServiceImpl implements MenuService {
     public ResponseMenuDto getMenus(Authentication authentication) {
         List<MenuRoleDto> menuRoles = new ArrayList<>();
         menuRoles.add(new MenuRoleDto(
-                "Dashboard", "fa fa-dashboard fa-fw", "/dashboard", 1,
+                "Dashboard", "dashboard", "fa fa-dashboard fa-fw", "/dashboard", 1,
                         List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN, ERoleName.USER), List.of()
                 )
         );
         menuRoles.add(new MenuRoleDto(
-                "User", "fa fa-user fa-fw", "#", 2,
+                "User", "user", "fa fa-user fa-fw", "#", 2,
                 List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN, ERoleName.USER),
                 List.of(
-                        new MenuRoleDto("User List", "fa fa-users fa-fw", "/profiles", 1,
+                        new MenuRoleDto("User List", "user-list", "fa fa-users fa-fw", "/profiles", 1,
                                 List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN), List.of()),
-                        new MenuRoleDto("Change Password", "fa fa-key fa-fw", "/change_password", 2,
+                        new MenuRoleDto("Change Password", "change-password", "fa fa-key fa-fw", "/change_password", 2,
                                 List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN, ERoleName.USER), List.of())
                 )
         ));
         menuRoles.add(new MenuRoleDto(
-                "About", "fa fa-newspaper-o fa-fw", "/about", 3,
+                "About", "about", "fa fa-newspaper-o fa-fw", "/about", 3,
                 List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN, ERoleName.USER), List.of()
         ));
         menuRoles.add(new MenuRoleDto(
-                "Log Out", "fa fa-sign-out fa-fw", "/logout", 4,
+                "Log Out", "log-out", "fa fa-sign-out fa-fw", "/logout", 4,
                 List.of(ERoleName.SUPER_ADMIN, ERoleName.ADMIN, ERoleName.USER), List.of()
         ));
 
@@ -55,7 +55,7 @@ public class MenuServiceImpl implements MenuService {
                                         a -> mr.getRoles().stream().map(String::valueOf).collect(Collectors.toList()).contains(a)
                                 )
                         ).map(
-                                mr -> new MenuDto(mr.getMenuName(), mr.getIconClass(), mr.getUrl(),
+                                mr -> new MenuDto(mr.getMenuName(), mr.getMenuClass(), mr.getIconClass(), mr.getUrl(),
                                         mr.getSubMenu(), mr.getOrderNumber())
                         ).collect(Collectors.toList())
                 )
@@ -71,7 +71,7 @@ public class MenuServiceImpl implements MenuService {
                         a -> m.getRoles().stream().map(String::valueOf).collect(Collectors.toList()).contains(a)
                 )
         ).map(
-                m -> new MenuDto(m.getMenuName(), m.getIconClass(), m.getUrl(), m.getSubMenu(), m.getOrderNumber())
+                m -> new MenuDto(m.getMenuName(), m.getMenuClass(), m.getIconClass(), m.getUrl(), m.getSubMenu(), m.getOrderNumber())
         ).collect(Collectors.toList()));
     }
 
