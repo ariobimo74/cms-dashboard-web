@@ -24,6 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        final String REMEMBER_ME_NAME = "softwaredeveloperstoday-remember-me";
         http
                 .csrf(
                         csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -42,16 +43,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .permitAll()
                 .and()
+                .headers(
+            headers -> headers
+                    .contentSecurityPolicy(csp -> csp
+                        .policyDirectives(
+                            "img-src 'self' data:; " +
+                            "font-src 'self'; " +
+                            "script-src 'self'; " +
+                            "style-src 'self' 'unsafe-inline'; " +
+                            "object-src 'none'; " +
+                            "frame-ancestors 'none';"
+                        )
+                    )
+                )
                 .rememberMe()
                 .key("softwaredeveloperstoday")
-                .rememberMeCookieName("remember-me")
-                .tokenValiditySeconds(604800)
+                .rememberMeCookieName(REMEMBER_ME_NAME)
+                .tokenValiditySeconds(104800)
                 .and()
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID","remember-me");
+                .deleteCookies("JSESSIONID",REMEMBER_ME_NAME);
     }
 
     @Override
