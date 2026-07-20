@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    $('#side-menu').css({
+        background: 'aliceblue'
+    })
+
     generateMenu()
 
     let responseData = {

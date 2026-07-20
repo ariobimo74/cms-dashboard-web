@@ -42,6 +42,11 @@ public class CommonController {
         }
     }
 
+    @GetMapping
+    public String defaultDashboard() {
+        return dashboard();
+    }
+
     @GetMapping("/dashboard")
     public String dashboard() {
         return "dashboard";
