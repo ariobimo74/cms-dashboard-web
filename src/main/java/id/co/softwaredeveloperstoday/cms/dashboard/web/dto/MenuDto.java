@@ -12,6 +12,7 @@ import java.util.List;
 public class MenuDto {
 
     private String menuName;
+    private String menuClass;
     private String iconClass;
     private String url;
     private List<MenuDto> subMenu;
