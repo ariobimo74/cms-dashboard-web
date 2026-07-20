@@ -31,19 +31,18 @@ $(document).ready(function () {
             { data: 'roleDto.roleName' },
             { data: 'email' },
             {
-                data: 'id', 
+                data: 'actionsId',
                 render: function (data, type, row) {
-                    if (currentRoles.length > 0 && allowedUserToChangePassword.length > 0 
-                        && currentRoles.some(data => allowedUserToChangePassword.includes(data))) 
-                        return `
-                            <button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button>
-                            <button class="btn btn-warning edit-btn" title="Edit Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf044</i></button>
-                            <button class="btn btn-danger delete-btn" title="Delete Data" data-id="${data}"><i class="fa fa-fw" aria-hidden="true" >&#xf1f8</i></button>
+                    let actionId = data.id
+                    let action = '<center>'
+                    for(i = 0; i < data.actions.length; i++) {
+                        let temp = data.actions[i]
+                        action += `
+                            <button class="` + temp.htmlClass + `" title="` + temp.title + `" data-id="${actionId}"><i class="fa fa-fw" aria-hidden="true">` + temp.icon + `</i></button>
                         `
-                    else {
-                        $('#register-btn').hide()
-                        return `<center><button class="btn btn-primary detail-btn" title="View Detail" data-id="${data}"><i class="fa fa-fw" aria-hidden="true">&#xf15c</i></button></center>`
                     }
+                    action += '</center>'
+                    return action
                 },
                 orderable: false, 
                 searchable: false
@@ -51,11 +50,11 @@ $(document).ready(function () {
         ]
     })
 
-    $('#user-dataTables').on('click', '.detail-btn', function () {
+    $('#user-dataTables').on('click', '.detail-item-btn', function () {
         window.location.href = "/profile/" + $(this).data('id')
     })
 
-    $('#user-dataTables').on('click', '.edit-btn', function () {
+    $('#user-dataTables').on('click', '.edit-item-btn', function () {
         window.location.href = "/edit/" + $(this).data('id')
     })
 
@@ -63,7 +62,7 @@ $(document).ready(function () {
         window.location.href = "/register"
     })
 
-    $('#user-dataTables').on('click', '.delete-btn', function () {
+    $('#user-dataTables').on('click', '.delete-item-btn', function () {
         event.preventDefault()
 
         swal({

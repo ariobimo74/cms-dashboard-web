@@ -9,6 +9,7 @@ async function getProfileData(profileId) {
             let resultData = result.data
 
             if (baseResponse.responseData.responseCode == 200) {
+                currentUsername = resultData.username
                 $('#firstName').val(resultData.firstName)
                 $('#lastName').val(resultData.lastName)
                 $('#idCardNumber').val(resultData.idCardNumber)

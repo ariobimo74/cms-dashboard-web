@@ -3,6 +3,7 @@ package id.co.softwaredeveloperstoday.cms.dashboard.web.service.impl;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.RoleDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dao.UserProfileDao;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.dto.*;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.factory.AuthorizationRoleLevelFactory;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.RoleMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.mapper.UserProfileDtoMapper;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.Role;
@@ -10,10 +11,13 @@ import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.User;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserProfile;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.model.entity.UserRole;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.scope.UserProfileScope;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.service.AuthorizationRoleLevelService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.AuthorizeRoleService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.service.UserProfileService;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.constant.IApplicationConstant;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EDataTableAction;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EDataTableSortBy;
+import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.ERoleLevel;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.enumeration.EUserSortBy;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.DataNotFoundException;
 import id.co.softwaredeveloperstoday.cms.dashboard.web.util.exception.PasswordNotMatchException;
@@ -56,6 +60,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileScope userProfileScope;
 
     private final AuthorizeRoleService authorizeRoleService;
+
+    private final AuthorizationRoleLevelFactory roleLevelFactory;
 
     @Override
     public AddUserProfileDto addUserProfile(Authentication authentication, AddUserProfileDto userProfileDto) {
@@ -176,7 +182,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (userProfiles.getTotalElements() == 0)
             return new ResponseDataTableDto<>(draw, 0, 0, new ArrayList<>());
         else return new ResponseDataTableDto<>(draw, userProfileDao.count(), userProfiles.getTotalElements(),
-                userProfiles.getContent().stream().map(userProfileDtoMapper::convertUserProfileDataTableDto).collect(Collectors.toList())
+                userProfiles.getContent().stream().map(userProfileDtoMapper::convertUserProfileDataTableDto)
+                        .peek(u -> {
+                            ActionDataTableIdentityDto identityDto = new ActionDataTableIdentityDto(u.getId());
+                            identityDto.setActions(actionDataTableDtoList(authentication));
+                            u.setActionsId(identityDto);
+                        }).collect(Collectors.toList())
         );
     }
 
@@ -248,6 +259,14 @@ public class UserProfileServiceImpl implements UserProfileService {
                         IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_NUMBER,
                 Optional.ofNullable(size).orElse(IApplicationConstant.CommonValue.Pagination.DEFAULT_PAGE_SIZE), sort
         );
+    }
+
+    private List<ActionDataTableDto> actionDataTableDtoList(Authentication authentication) {
+        AuthorizationRoleLevelService roleLevelService = roleLevelFactory.determineService(ERoleLevel.SUPER_ADMIN);
+
+        if (roleLevelService.isAuthorized(authentication))
+            return Arrays.stream(EDataTableAction.values()).map(ActionDataTableDto::new).collect(Collectors.toList());
+        else return List.of(new ActionDataTableDto(EDataTableAction.DETAIL));
     }
 
 }
