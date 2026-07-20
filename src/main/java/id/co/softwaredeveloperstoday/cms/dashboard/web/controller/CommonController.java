@@ -58,7 +58,7 @@ public class CommonController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie sessionCookie = new Cookie("JSESSIONID", null);
-        Cookie rememberMeCookie = new Cookie("remember-me", null);
+        Cookie rememberMeCookie = new Cookie("softwaredeveloperstoday-remember-me", null);
 
         String cookiePath = StringUtils.hasText(request.getContextPath()) ? request.getContextPath() : "/";
 
