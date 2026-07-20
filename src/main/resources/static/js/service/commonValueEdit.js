@@ -2,6 +2,7 @@ var roles = []
 var genders = []
 var members = []
 var recommendedUsername = []
+var currentUsername
 
 async function generateCommonValues() {
     await $.ajax({
@@ -94,9 +95,8 @@ async function getRecommendedUsername() {
             }
         })
 
-        if (recommendedUsername.length > 0) {
+        if (recommendedUsername.length > 0 && currentUsername == null)
             await generateRecommendedUsername()
-        }
     } else $('#recommendedUsername').empty()
 }
 

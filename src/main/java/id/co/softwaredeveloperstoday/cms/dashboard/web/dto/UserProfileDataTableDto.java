@@ -20,5 +20,6 @@ public class UserProfileDataTableDto {
             Long.parseLong(String.valueOf(ERoleName.USER.ordinal())), ERoleName.USER
     );
     private String email;
+    private ActionDataTableIdentityDto actionsId;
 
 }
