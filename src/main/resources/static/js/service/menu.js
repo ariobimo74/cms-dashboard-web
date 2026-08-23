@@ -31,15 +31,15 @@ $(document).ready(function() {
                         for (i = 0; i < result.data.menus.length; i++) {
                             let menuTemp = result.data.menus[i]
 
-                            $('#side-menu').append('<li class="class-' + menuTemp.menuClass + ' active"><a href=' + menuTemp.url + '><i class="' + menuTemp.iconClass + '"></i> ' + menuTemp.menuName + '</a>')
                             if (menuTemp.subMenu.length > 0) {
-                                $('.class-' + menuTemp.menuClass).append('<ul class="' + menuTemp.menuClass + '-second ' + 'nav nav-second-level collapse in" aria-expanded="true" style="">')
+                                $('#side-menu').append('<li class="class-' + menuTemp.menuClass + ' active"><a href=' + menuTemp.url + ' style="cursor: context-menu"><i class="' + menuTemp.iconClass + '"></i> ' + menuTemp.menuName + '</a>')
+                                $(".class-" + menuTemp.menuClass).append('<ul class="' + menuTemp.menuClass + '-second ' + 'nav nav-second-level collapse in" aria-expanded="true" style="">')
                                 for (let j = 0; j < menuTemp.subMenu.length; j++) {
                                     let menuTemp2 = menuTemp.subMenu[j]
                                     $('.' + menuTemp.menuClass + '-second').append('<li><a href=' + menuTemp2.url + '><i class="' + menuTemp2.iconClass + '"></i> ' + menuTemp2.menuName + '</a></li>')
                                 }
-                                $('.class-' + menuTemp.menuClass).append('</ul>')
-                            }
+                                $(".class-" + menuTemp.menuClass).append('</ul>')
+                            } else $('#side-menu').append('<li class="class-' + menuTemp.menuClass + ' active"><a href=' + menuTemp.url + '><i class="' + menuTemp.iconClass + '"></i> ' + menuTemp.menuName + '</a>')
                             
                             $('#side-menu').append('</li>')
                         }
