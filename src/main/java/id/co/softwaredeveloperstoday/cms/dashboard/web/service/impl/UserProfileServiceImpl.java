@@ -70,6 +70,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (!Objects.equals(userProfileDto.getPassword(), userProfileDto.getConfirmPassword()))
             throw new PasswordNotMatchException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_NEW_PASSWORD_NOT_MATCH);
 
+        if (StringUtils.isNotBlank(userProfileDto.getUsername())
+                && !Objects.equals(userProfileDto.getUsername(), userProfileDto.getUsername().toLowerCase()))
+            userProfileDto.setUsername(userProfileDto.getUsername().toLowerCase());
+
         Role role = roleMapper.convertRoleDto(userProfileDto.getRoleDto());
         User user = userProfileDtoMapper.convertUser(userProfileDto);
         UserRole userRole = new UserRole(null, user, role);
