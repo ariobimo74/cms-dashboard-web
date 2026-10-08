@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByUserName(String username) {
-        return userDao.findByUsername(username);
+        return userDao.findByUsernameIgnoreCase(username);
     }
 
     @Override
@@ -59,12 +59,12 @@ public class UserServiceImpl implements UserService {
 
         User user;
         if (StringUtils.isNotBlank(changePasswordDto.getUsername()))
-            user = userDao.findByUsername(changePasswordDto.getUsername());
+            user = userDao.findByUsernameIgnoreCase(changePasswordDto.getUsername());
         else if (StringUtils.isBlank(changePasswordDto.getUsername()) && Objects.nonNull(userScope)
                 && Objects.nonNull(userScope.getUser()) && Objects.nonNull(userScope.getUser().getUsername())
                 && Objects.equals(userScope.getUser().getUsername(), authentication.getName()))
             user = userScope.getUser();
-        else user = userDao.findByUsername(authentication.getName());
+        else user = userDao.findByUsernameIgnoreCase(authentication.getName());
 
         if (Objects.isNull(user))
             throw new UsernameNotFoundException(IApplicationConstant.CommonMessage.ErrorMessage.ERROR_MESSAGE_USER_FOUND_USERNAME);
